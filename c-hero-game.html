@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C Hero: Code → Run → Survive</title>
+    <style>
+        :root {
+            --bg: #0a0e27;
+            --bg-light: #1a1f3a;
+            --primary: #00ff88;
+            --accent: #00d4ff;
+            --error: #ff4757;
+            --text: #e5e7eb;
+            --text-muted: #94a3b8;
+            --code-bg: #0d1117;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .game-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: var(--bg-light);
+            border-radius: 15px;
+            border: 2px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .game-subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .lang-button {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid var(--primary);
+            color: var(--text);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .lang-button:hover {
+            background: var(--primary);
+            color: var(--bg);
+            transform: translateY(-2px);
+        }
+
+        /* Menu */
+        .menu-screen {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .menu-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .menu-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
+
+        .level-card {
+            background: var(--bg-light);
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .level-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .level-card-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .level-icon {
+            font-size: 3rem;
+        }
+
+        .level-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .level-description {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Game Screen */
+        .game-screen {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .code-panel {
+            background: var(--code-bg);
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+        }
+
+        .code-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .code-block {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text);
+            white-space: pre;
+        }
+
+        .code-keyword {
+            color: #ff6b9d;
+        }
+
+        .code-type {
+            color: #00d4ff;
+        }
+
+        .code-function {
+            color: #ffd93d;
+        }
+
+        .code-comment {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .code-number {
+            color: #a78bfa;
+        }
+
+        .scene-panel {
+            background: var(--bg-light);
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 400px;
+        }
+
+        .scene {
+            font-size: 8rem;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .health-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(255, 71, 87, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 2px solid var(--error);
+        }
+
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--error), #ff6348);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .door {
+            font-size: 10rem;
+            transition: all 0.5s ease;
+        }
+
+        .door.open {
+            opacity: 0.3;
+            transform: translateX(100px);
+        }
+
+        /* Options */
+        .options-panel {
+            background: var(--bg-light);
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+        }
+
+        .options-title {
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .option-btn {
+            width: 100%;
+            background: var(--code-bg);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            color: var(--text);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .option-btn:hover {
+            border-color: var(--accent);
+            background: rgba(0, 212, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .option-btn.selected {
+            border-color: var(--primary);
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .option-btn.correct {
+            border-color: var(--primary);
+            background: rgba(0, 255, 136, 0.2);
+            animation: correctPulse 0.5s ease;
+        }
+
+        .option-btn.wrong {
+            border-color: var(--error);
+            background: rgba(255, 71, 87, 0.2);
+            animation: shake 0.5s ease;
+        }
+
+        /* Run Button */
+        .run-button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border: none;
+            color: var(--bg);
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .run-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.5);
+        }
+
+        .run-button:active {
+            transform: scale(0.98);
+        }
+
+        .run-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Result Screen */
+        .result-screen {
+            text-align: center;
+            padding: 60px 40px;
+            background: var(--bg-light);
+            border-radius: 20px;
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .result-icon {
+            font-size: 8rem;
+            margin-bottom: 20px;
+        }
+
+        .result-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+        }
+
+        .result-title.success {
+            color: var(--primary);
+        }
+
+        .result-title.error {
+            color: var(--error);
+        }
+
+        .result-message {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .insight-box {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid var(--primary);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+
+        .insight-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .insight-text {
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            margin: 10px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 255, 136, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--text-muted);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Animations */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes errorFlash {
+            0%, 100% { background: var(--bg-light); }
+            50% { background: rgba(255, 71, 87, 0.3); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        .error-flash {
+            animation: errorFlash 0.3s ease;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .game-container {
+                padding: 10px;
+            }
+
+            .game-header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+                text-align: center;
+            }
+
+            .game-title {
+                font-size: 1.8rem;
+            }
+
+            .game-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .game-screen {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .code-panel,
+            .scene-panel,
+            .options-panel {
+                padding: 20px;
+            }
+
+            .scene {
+                font-size: 5rem;
+            }
+
+            .door {
+                font-size: 6rem;
+            }
+
+            .code-block {
+                font-size: 0.85rem;
+                line-height: 1.6;
+            }
+
+            .option-btn {
+                font-size: 0.95rem;
+                padding: 15px;
+            }
+
+            .run-button {
+                font-size: 1.2rem;
+                padding: 15px;
+            }
+
+            .level-card {
+                padding: 20px;
+            }
+
+            .level-icon {
+                font-size: 2.5rem;
+            }
+
+            .level-title {
+                font-size: 1.3rem;
+            }
+
+            .result-screen {
+                padding: 40px 20px;
+            }
+
+            .result-icon {
+                font-size: 5rem;
+            }
+
+            .result-title {
+                font-size: 1.8rem;
+            }
+
+            .insight-box {
+                padding: 15px;
+            }
+
+            .mission-card {
+                padding: 15px !important;
+            }
+
+            .mission-card h3 {
+                font-size: 1.2rem !important;
+            }
+
+            .mission-card p {
+                font-size: 0.9rem !important;
+            }
+
+            .btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+
+            .language-icon {
+                font-size: 4rem;
+            }
+
+            .language-title {
+                font-size: 2rem;
+            }
+
+            .language-btn {
+                font-size: 1.1rem;
+                padding: 20px;
+            }
+        }
+
+        /* Language Selection */
+        .language-selection {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+        }
+
+        .language-card {
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .language-icon {
+            font-size: 5rem;
+            margin-bottom: 30px;
+        }
+
+        .language-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .language-subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        .language-buttons {
+            display: grid;
+            gap: 20px;
+        }
+
+        .language-btn {
+            background: var(--bg-light);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            color: var(--text);
+            padding: 25px;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .language-btn:hover {
+            border-color: var(--primary);
+            background: rgba(0, 255, 136, 0.1);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <div>
+                <h1 class="game-title">C HERO</h1>
+                <p class="game-subtitle" id="headerSubtitle">Code → Run → Survive</p>
+            </div>
+            <button class="lang-button" onclick="toggleLanguage()" id="langButton">
+                🌍 <span id="langText">O'zbekcha</span>
+            </button>
+        </div>
+
+        <div id="gameContent">
+            <!-- Content will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // Language System
+        let currentLanguage = localStorage.getItem('chero_language') || null;
+
+        const translations = {
+            ru: {
+                // Header
+                headerSubtitle: "Code → Run → Survive",
+                langText: "O'zbekcha",
+
+                // Language Selection
+                languageTitle: "Выберите язык",
+                languageSubtitle: "Choose your language",
+                uzbek: "🇺🇿 O'zbekcha",
+                russian: "🇷🇺 Русский",
+
+                // Menu
+                menuTitle: "Выберите уровень",
+                menuSubtitle: "Изучите основы C за 10 минут",
+                totalXP: "Всего XP",
+                viewStats: "📊 Статистика",
+                resetProgress: "🔄 Сбросить прогресс",
+                
+                // Statistics
+                statsTitle: "📊 Статистика",
+                statsLevelTitle: "Уровень",
+                statsAttempts: "Попыток",
+                statsBestXP: "Лучший XP",
+                statsStatus: "Статус",
+                statsCompleted: "✅ Пройден",
+                statsNotCompleted: "❌ Не пройден",
+                statsClose: "Закрыть",
+                
+                // Reset
+                resetTitle: "Сбросить прогресс?",
+                resetMessage: "Все ваши достижения и XP будут удалены. Это действие нельзя отменить.",
+                resetConfirm: "Да, сбросить",
+                resetCancel: "Отмена",
+                
+                // XP
+                xpEarned: "XP получено",
+                attempt1: "С 1-й попытки",
+                attempt2: "Со 2-й попытки",
+                attempt3: "С 3+ попытки",
+
+                // Level 1
+                level1Title: "Уровень 1: IF / ELSE",
+                level1Description: "Понять, что условие управляет поведением. Вылечи героя или умри!",
+                level1CodeTitle: "💻 Код",
+                level1SceneTitle: "🎮 Сцена",
+                level1OptionsTitle: "Выберите действие:",
+                level1Heal: "heal();",
+                level1Attack: "attack();",
+                level1Return: "return 0;",
+                level1RunButton: "▶ ЗАПУСТИТЬ КОД",
+                level1SuccessTitle: "✅ Код работает!",
+                level1SuccessMessage: "Герой вылечился и выжил!",
+                level1FailTitle: "❌ Ошибка выполнения",
+                level1FailMessage: "Герой погиб от турели...",
+                level1InsightTitle: "💡 Урок:",
+                level1Insight: "Код — это решение, а не просто текст. Условие if проверяет здоровье и решает: лечиться или атаковать.",
+
+                // Level 2
+                level2Title: "Уровень 2: Указатели",
+                level2Description: "Понять разницу между ptr и *ptr. Открой дверь правильно!",
+                level2CodeTitle: "💻 Код",
+                level2SceneTitle: "🎮 Сцена",
+                level2OptionsTitle: "Что нужно сделать?",
+                level2Option1: "ptr = 1;",
+                level2Option2: "*ptr = 1;",
+                level2Option3: "&ptr = 1;",
+                level2RunButton: "▶ ЗАПУСТИТЬ КОД",
+                level2SuccessTitle: "✅ Дверь открыта!",
+                level2SuccessMessage: "Вы разыменовали указатель правильно!",
+                level2FailTitle: "❌ Segmentation fault 💥",
+                level2FailMessage: "Неправильная работа с указателем!",
+                level2Insight: "Указатель — это адрес. Звёздочка (*) — это действие разыменования, которое меняет значение по адресу.",
+
+                // Level 3
+                level3Title: "Уровень 3: Циклы",
+                level3Description: "Понять как работает while. Остановись вовремя или упадёшь!",
+                level3CodeTitle: "💻 Код",
+                level3SceneTitle: "🎮 Сцена",
+                level3OptionsTitle: "Что добавить в цикл?",
+                level3Option1: "steps--;",
+                level3Option2: "steps++;",
+                level3Option3: "break;",
+                level3RunButton: "▶ ЗАПУСТИТЬ КОД",
+                level3SuccessTitle: "✅ Герой остановился!",
+                level3SuccessMessage: "Цикл завершился правильно!",
+                level3FailTitle: "❌ Infinite loop 💀",
+                level3FailMessage: "Бесконечный цикл! Герой не может остановиться...",
+                level3Insight: "Если условие не меняется — цикл никогда не закончится. Счётчик должен изменяться.",
+
+                // Level 4
+                level4Title: "Уровень 4: Память",
+                level4Description: "Понять что память нужно выделять. NULL — реальная опасность!",
+                level4CodeTitle: "💻 Код",
+                level4SceneTitle: "🎮 Сцена",
+                level4OptionsTitle: "Что нужно сделать?",
+                level4Option1: "item = malloc(sizeof(int));",
+                level4Option2: "item = 1;",
+                level4Option3: "*item = 1;",
+                level4RunButton: "▶ ЗАПУСТИТЬ КОД",
+                level4SuccessTitle: "✅ Память выделена!",
+                level4SuccessMessage: "Предмет появился и герой взял его!",
+                level4FailTitle: "❌ Accessing unallocated memory 💥",
+                level4FailMessage: "Попытка работы с невыделенной памятью!",
+                level4Insight: "Нет памяти — нет данных. malloc() выделяет память, без неё указатель бесполезен.",
+
+                // Final
+                finalTitle: "🏆 Вы выжили!",
+                finalMessage: "Поздравляем! Вы освоили основы C.",
+                finalLearned: "🎓 Вы научились:",
+                finalSkill1: "Использовать условия if/else для управления логикой",
+                finalSkill2: "Работать с указателями и разыменованием",
+                finalSkill3: "Управлять циклами while и предотвращать зависание",
+                finalSkill4: "Выделять память через malloc и избегать segfault",
+                finalNextTitle: "Что дальше?",
+                finalNextMessage: "В реальном C вас ждут: malloc/free, структуры, файлы и многое другое!",
+                finalButton: "Вернуться в меню",
+
+                // Buttons
+                nextLevel: "Следующий уровень",
+                backToMenu: "В меню",
+                tryAgain: "Попробовать снова",
+                showFinal: "Финальные результаты",
+            },
+            uz: {
+                // Header
+                headerSubtitle: "Kod → Ishga tushir → Omon qol",
+                langText: "Русский",
+
+                // Language Selection
+                languageTitle: "Tilni tanlang",
+                languageSubtitle: "Choose your language",
+                uzbek: "🇺🇿 O'zbekcha",
+                russian: "🇷🇺 Русский",
+
+                // Menu
+                menuTitle: "Darajani tanlang",
+                menuSubtitle: "C dasturlash tilini 10 daqiqada o'rganing",
+                totalXP: "Jami XP",
+                viewStats: "📊 Statistika",
+                resetProgress: "🔄 Natijalarni tozalash",
+                
+                // Statistics
+                statsTitle: "📊 Statistika",
+                statsLevelTitle: "Daraja",
+                statsAttempts: "Urinishlar",
+                statsBestXP: "Eng yaxshi XP",
+                statsStatus: "Holat",
+                statsCompleted: "✅ Bajarildi",
+                statsNotCompleted: "❌ Bajarilmadi",
+                statsClose: "Yopish",
+                
+                // Reset
+                resetTitle: "Natijalarni tozalash?",
+                resetMessage: "Barcha yutuqlaringiz va XP o'chiriladi. Bu harakatni bekor qilib bo'lmaydi.",
+                resetConfirm: "Ha, tozalash",
+                resetCancel: "Bekor qilish",
+                
+                // XP
+                xpEarned: "XP olindi",
+                attempt1: "1-urinishdan",
+                attempt2: "2-urinishdan",
+                attempt3: "3+ urinishdan",
+
+                // Level 1
+                level1Title: "1-daraja: IF / ELSE",
+                level1Description: "Shartlar harakatni boshqarishini tushunish. Qahramonni davolab qutqaring!",
+                level1CodeTitle: "💻 Kod",
+                level1SceneTitle: "🎮 Sahna",
+                level1OptionsTitle: "Harakatni tanlang:",
+                level1Heal: "heal();",
+                level1Attack: "attack();",
+                level1Return: "return 0;",
+                level1RunButton: "▶ KODNI ISHGA TUSHIR",
+                level1SuccessTitle: "✅ Kod ishladi!",
+                level1SuccessMessage: "Qahramon sog'aydi va omon qoldi!",
+                level1FailTitle: "❌ Xatolik",
+                level1FailMessage: "Qahramon halok bo'ldi...",
+                level1InsightTitle: "💡 Dars:",
+                level1Insight: "Kod - bu yechim, shunchaki matn emas. IF sharti sog'liqni tekshiradi va qaror qabul qiladi: davolanish yoki hujum qilish.",
+
+                // Level 2
+                level2Title: "2-daraja: Ko'rsatkichlar",
+                level2Description: "ptr va *ptr o'rtasidagi farqni tushunish. Eshikni to'g'ri oching!",
+                level2CodeTitle: "💻 Kod",
+                level2SceneTitle: "🎮 Sahna",
+                level2OptionsTitle: "Nima qilish kerak?",
+                level2Option1: "ptr = 1;",
+                level2Option2: "*ptr = 1;",
+                level2Option3: "&ptr = 1;",
+                level2RunButton: "▶ KODNI ISHGA TUSHIR",
+                level2SuccessTitle: "✅ Eshik ochildi!",
+                level2SuccessMessage: "Ko'rsatkichni to'g'ri ishlatdingiz!",
+                level2FailTitle: "❌ Segmentation fault 💥",
+                level2FailMessage: "Ko'rsatkichdan noto'g'ri foydalanish!",
+                level2Insight: "Ko'rsatkich - bu manzil. Yulduzcha (*) - manzildagi qiymatni o'zgartirish.",
+
+                // Level 3
+                level3Title: "3-daraja: Sikllar",
+                level3Description: "while qanday ishlashini tushunish. O'z vaqtida to'xta yoki yiqilib tush!",
+                level3CodeTitle: "💻 Kod",
+                level3SceneTitle: "🎮 Sahna",
+                level3OptionsTitle: "Siklga nima qo'shish kerak?",
+                level3Option1: "steps--;",
+                level3Option2: "steps++;",
+                level3Option3: "break;",
+                level3RunButton: "▶ KODNI ISHGA TUSHIR",
+                level3SuccessTitle: "✅ Qahramon to'xtadi!",
+                level3SuccessMessage: "Sikl to'g'ri yakunlandi!",
+                level3FailTitle: "❌ Cheksiz sikl 💀",
+                level3FailMessage: "Cheksiz sikl! Qahramon to'xtay olmaydi...",
+                level3Insight: "Agar shart o'zgarmasa - sikl hech qachon tugamaydi. Hisoblagich o'zgarishi kerak.",
+
+                // Level 4
+                level4Title: "4-daraja: Xotira",
+                level4Description: "Xotirani ajratish kerakligini tushunish. NULL - haqiqiy xavf!",
+                level4CodeTitle: "💻 Kod",
+                level4SceneTitle: "🎮 Sahna",
+                level4OptionsTitle: "Nima qilish kerak?",
+                level4Option1: "item = malloc(sizeof(int));",
+                level4Option2: "item = 1;",
+                level4Option3: "*item = 1;",
+                level4RunButton: "▶ KODNI ISHGA TUSHIR",
+                level4SuccessTitle: "✅ Xotira ajratildi!",
+                level4SuccessMessage: "Buyum paydo bo'ldi va qahramon uni oldi!",
+                level4FailTitle: "❌ Ajratilmagan xotiraga kirish 💥",
+                level4FailMessage: "Ajratilmagan xotira bilan ishlash!",
+                level4Insight: "Xotira yo'q - ma'lumot yo'q. malloc() xotira ajratadi, usiz ko'rsatkich foydasiz.",
+
+                // Final
+                finalTitle: "🏆 Siz omon qoldingiz!",
+                finalMessage: "Tabriklaymiz! Siz C tilining asoslarini o'rgandingiz.",
+                finalLearned: "🎓 O'rganganlaringiz:",
+                finalSkill1: "if/else shartlaridan mantiqni boshqarish uchun foydalanish",
+                finalSkill2: "Ko'rsatkichlar bilan ishlash va ularni dereference qilish",
+                finalSkill3: "while sikllarini boshqarish va osilib qolishni oldini olish",
+                finalSkill4: "malloc orqali xotira ajratish va segfault dan qochish",
+                finalNextTitle: "Keyingi qadam?",
+                finalNextMessage: "Haqiqiy C dasturlashda: malloc/free, strukturalar, fayllar va boshqalar!",
+                finalButton: "Menyuga qaytish",
+
+                // Buttons
+                nextLevel: "Keyingi daraja",
+                backToMenu: "Menyuga",
+                tryAgain: "Qayta urinish",
+                showFinal: "Yakuniy natijalar",
+            }
+        };
+
+        function t(key) {
+            return translations[currentLanguage]?.[key] || key;
+        }
+
+        // Game State
+        let currentLevel = 0;
+        let selectedOption = null;
+        let completedLevels = JSON.parse(localStorage.getItem('chero_completed') || '[]');
+        
+        // XP and Statistics
+        let totalXP = parseInt(localStorage.getItem('chero_totalXP') || '0');
+        let levelStats = JSON.parse(localStorage.getItem('chero_stats') || '{}');
+
+        // Levels Data
+        const levels = [
+            {
+                id: 1,
+                type: 'if-else',
+                code: `<span class="code-type">int</span> health = <span class="code-number">20</span>;
+
+<span class="code-keyword">if</span> (health < <span class="code-number">30</span>) {
+    <span class="code-comment">// TODO: что делать?</span>
+}`,
+                correctAnswer: 'heal',
+                initialHealth: 20
+            },
+            {
+                id: 2,
+                type: 'pointer',
+                code: `<span class="code-type">int</span> door = <span class="code-number">0</span>;
+<span class="code-type">int*</span> ptr = &door;
+
+<span class="code-comment">// что нужно сделать?</span>`,
+                correctAnswer: '*ptr',
+                doorClosed: true
+            },
+            {
+                id: 3,
+                type: 'loop',
+                code: `<span class="code-type">int</span> steps = <span class="code-number">3</span>;
+
+<span class="code-keyword">while</span> (steps > <span class="code-number">0</span>) {
+    <span class="code-function">move_forward</span>();
+    <span class="code-comment">// TODO</span>
+}`,
+                correctAnswer: 'steps--',
+                initialSteps: 3
+            },
+            {
+                id: 4,
+                type: 'malloc',
+                code: `<span class="code-type">int*</span> item;
+
+<span class="code-comment">// что нужно сделать перед использованием?</span>`,
+                correctAnswer: 'malloc',
+                itemExists: false
+            }
+        ];
+        
+        // Initialize stats for each level if not exists
+        levels.forEach(level => {
+            if (!levelStats[level.id]) {
+                levelStats[level.id] = {
+                    attempts: 0,
+                    bestXP: 0,
+                    completed: false
+                };
+            }
+        });
+
+        // Start Game
+        function startGame() {
+            if (!currentLanguage) {
+                showLanguageSelection();
+                return;
+            }
+
+            updateUILanguage();
+            showMenu();
+        }
+
+        // Language Selection
+        function showLanguageSelection() {
+            const content = `
+                <div class="language-selection fade-in">
+                    <div class="language-card">
+                        <div class="language-icon">🌍</div>
+                        <h2 class="language-title">${translations.ru.languageTitle}</h2>
+                        <p class="language-subtitle">${translations.ru.languageSubtitle}</p>
+                        <div class="language-buttons">
+                            <button class="language-btn" onclick="selectLanguage('uz')">
+                                ${translations.uz.uzbek}
+                            </button>
+                            <button class="language-btn" onclick="selectLanguage('ru')">
+                                ${translations.ru.russian}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('gameContent').innerHTML = content;
+        }
+
+        function selectLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('chero_language', lang);
+            startGame();
+        }
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'uz' ? 'ru' : 'uz';
+            localStorage.setItem('chero_language', currentLanguage);
+            updateUILanguage();
+            
+            // Reload current screen
+            const gameContent = document.getElementById('gameContent');
+            if (gameContent.querySelector('.menu-screen')) {
+                showMenu();
+            }
+        }
+
+        function updateUILanguage() {
+            document.getElementById('headerSubtitle').textContent = t('headerSubtitle');
+            document.getElementById('langText').textContent = t('langText');
+        }
+
+        // Menu
+        function showMenu() {
+            const content = `
+                <div class="menu-screen fade-in">
+                    <h2 class="menu-title">${t('menuTitle')}</h2>
+                    <p class="menu-subtitle">${t('menuSubtitle')}</p>
+                    
+                    <div style="text-align: center; margin: 20px 0; padding: 20px; background: var(--bg-light); border-radius: 15px; border: 2px solid rgba(0, 255, 136, 0.2);">
+                        <div style="font-size: 1.5rem; color: var(--primary); font-weight: 700;">
+                            ${t('totalXP')}: ${totalXP} XP
+                        </div>
+                    </div>
+
+                    ${levels.map((level, index) => {
+                        const stats = levelStats[level.id] || { attempts: 0, bestXP: 0, completed: false };
+                        const isCompleted = completedLevels.includes(level.id);
+                        const icon = isCompleted ? '✅' : level.id === 1 ? '💚' : '🔒';
+                        
+                        return `
+                            <div class="level-card" onclick="selectLevel(${index})">
+                                <div class="level-card-header">
+                                    <div class="level-icon">${icon}</div>
+                                    <div style="flex: 1;">
+                                        <div class="level-title">${t('level' + level.id + 'Title')}</div>
+                                        ${stats.bestXP > 0 ? `<div style="color: var(--accent); font-size: 0.9rem;">⭐ ${stats.bestXP} XP</div>` : ''}
+                                    </div>
+                                </div>
+                                <div class="level-description">
+                                    ${t('level' + level.id + 'Description')}
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                    
+                    <div style="display: flex; gap: 15px; margin-top: 30px;">
+                        <button class="btn btn-secondary" onclick="showStats()" style="flex: 1;">
+                            ${t('viewStats')}
+                        </button>
+                        <button class="btn btn-secondary" onclick="confirmReset()" style="flex: 1;">
+                            ${t('resetProgress')}
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('gameContent').innerHTML = content;
+        }
+
+        function selectLevel(index) {
+            currentLevel = index;
+            selectedOption = null;
+            showLevel();
+        }
+
+        // Level Display
+        function showLevel() {
+            const level = levels[currentLevel];
+            
+            if (level.type === 'if-else') {
+                showLevel1();
+            } else if (level.type === 'pointer') {
+                showLevel2();
+            } else if (level.type === 'loop') {
+                showLevel3();
+            } else if (level.type === 'malloc') {
+                showLevel4();
+            }
+        }
+
+        // Level 1: IF/ELSE
+        function showLevel1() {
+            const level = levels[0];
+            const content = `
+                <div class="fade-in">
+                    <div class="mission-card" style="background: var(--bg-light); border: 2px solid rgba(0, 255, 136, 0.2); border-radius: 15px; padding: 20px; margin-bottom: 20px;">
+                        <h3 style="color: var(--primary); margin-bottom: 10px;">${t('level1Title')}</h3>
+                        <p style="color: var(--text-muted);">${t('level1Description')}</p>
+                    </div>
+                    
+                    <div class="game-screen">
+                        <div class="code-panel">
+                            <div class="code-title">${t('level1CodeTitle')}</div>
+                            <div class="code-block">${level.code}</div>
+                        </div>
+
+                        <div class="scene-panel" id="scenePanel">
+                            <div class="code-title">${t('level1SceneTitle')}</div>
+                            <div class="health-bar">
+                                <div class="health-fill" id="healthBar" style="width: ${(level.initialHealth / 100) * 100}%">
+                                    ❤️ ${level.initialHealth} HP
+                                </div>
+                            </div>
+                            <div class="scene" id="hero">🧑‍💻</div>
+                            <div class="scene" id="turret">🔫</div>
+                        </div>
+                    </div>
+
+                    <div class="options-panel">
+                        <div class="options-title">${t('level1OptionsTitle')}</div>
+                        <button class="option-btn" onclick="selectOption('heal')" id="option-heal">
+                            ${t('level1Heal')}
+                        </button>
+                        <button class="option-btn" onclick="selectOption('attack')" id="option-attack">
+                            ${t('level1Attack')}
+                        </button>
+                        <button class="option-btn" onclick="selectOption('return')" id="option-return">
+                            ${t('level1Return')}
+                        </button>
+                        <button class="run-button" onclick="runCode()" id="runButton" disabled>
+                            ${t('level1RunButton')}
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('gameContent').innerHTML = content;
+        }
+
+        // Level 2: Pointers
+        function showLevel2() {
+            const level = levels[1];
+            const content = `
+                <div class="fade-in">
+                    <div class="mission-card" style="background: var(--bg-light); border: 2px solid rgba(0, 255, 136, 0.2); border-radius: 15px; padding: 20px; margin-bottom: 20px;">
+                        <h3 style="color: var(--primary); margin-bottom: 10px;">${t('level2Title')}</h3>
+                        <p style="color: var(--text-muted);">${t('level2Description')}</p>
+                    </div>
+                    
+                    <div class="game-screen">
+                        <div class="code-panel">
+                            <div class="code-title">${t('level2CodeTitle')}</div>
+                            <div class="code-block">${level.code}</div>
+                        </div>
+
+                        <div class="scene-panel" id="scenePanel">
+                            <div class="code-title">${t('level2SceneTitle')}</div>
+                            <div class="door" id="door">🚪</div>
+                            <div class="scene" id="hero">🧑‍💻</div>
+                        </div>
+                    </div>
+
+                    <div class="options-panel">
+                        <div class="options-title">${t('level2OptionsTitle')}</div>
+                        <button class="option-btn" onclick="selectOption('ptr')" id="option-ptr">
+                            ${t('level2Option1')}
+                        </button>
+                        <button class="option-btn" onclick="selectOption('*ptr')" id="option-*ptr">
+                            ${t('level2Option2')}
+                        </button>
+                        <button class="option-btn" onclick="selectOption('&ptr')" id="option-&ptr">
+                            ${t('level2Option3')}
+                        </button>
+                        <button class="run-button" onclick="runCode()" id="runButton" disabled>
+                            ${t('level2RunButton')}
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('gameContent').innerHTML = content;
+        }
+
+        // Level 3: Loop
+        function showLevel3() {
+            const level = levels[2];
+            const content = `
+                <div class="fade-in">
+                    <div style="background: var(--bg-light); border: 2px solid rgba(0, 255, 136, 0.2); border-radius: 15px; padding: 20px; margin-bottom: 20px;">
+                        <h3 style="color: var(--primary); margin-bottom: 10px;">🎯 ${t('level3Title')}</h3>
+                        <p style="color: var(--text-muted);">${t('level3Description')}</p>
+                    </div>
+
+                    <div class="game-screen">
+                        <div class="code-panel">
+                            <div class="code-title">${t('level3CodeTitle')}</div>
+                            <div class="code-block">${level.code}</div>
+                        </div>
+
+                        <div class="scene-panel" id="scenePanel">
+                            <div class="code-title">${t('level3SceneTitle')}</div>
+                            <div style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 20px;">
+                                Steps: <span id="stepsCounter">${level.initialSteps}</span>
+                            </div>
+                            <div style="font-size: 4rem; margin: 20px 0;">🏃</div>
+                            <div class="scene" id="hero">🧑‍💻</div>
+                        </div>
+                    </div>
+
+                    <div class="options-panel">
+                        <div class="options-title">${t('level3OptionsTitle')}</div>
+                        <button class="option-btn" onclick="selectOption('steps--')" id="option-steps--">
+                            ${t('level3Option1')}
+                        </button>
+                        <button class="option-btn" onclick="selectOption('steps++')" id="option-steps++">
+                            ${t('level3Option2')}
+                        </button>
+                        <button class="option-btn" onclick="selectOption('break')" id="option-break">
+                            ${t('level3Option3')}
+                        </button>
+                        <button class="run-button" onclick="runCode()" id="runButton" disabled>
+                            ${t('level3RunButton')}
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('gameContent').innerHTML = content;
+        }
+
+        // Level 4: Malloc
+        function showLevel4() {
+            const level = levels[3];
+            const content = `
+                <div class="fade-in">
+                    <div class="mission-card" style="background: var(--bg-light); border: 2px solid rgba(0, 255, 136, 0.2); border-radius: 15px; padding: 20px; margin-bottom: 20px;">
+                        <h3 style="color: var(--primary); margin-bottom: 10px;">${t('level4Title')}</h3>
+                        <p style="color: var(--text-muted);">${t('level4Description')}</p>
+                    </div>
+                    
+                    <div class="game-screen">
+                        <div class="code-panel">
+                            <div class="code-title">${t('level4CodeTitle')}</div>
+                            <div class="code-block">${level.code}</div>
+                        </div>
+
+                        <div class="scene-panel" id="scenePanel">
+                            <div class="code-title">${t('level4SceneTitle')}</div>
+                            <div class="scene" id="item" style="opacity: 0.3; filter: grayscale(100%);">💎</div>
+                            <div class="scene" id="hero">🧑‍💻</div>
+                        </div>
+                    </div>
+
+                    <div class="options-panel">
+                        <div class="options-title">${t('level4OptionsTitle')}</div>
+                        <button class="option-btn" onclick="selectOption('malloc')" id="option-malloc">
+                            ${t('level4Option1')}
+                        </button>
+                        <button class="option-btn" onclick="selectOption('item=1')" id="option-item=1">
+                            ${t('level4Option2')}
+                        </button>
+                        <button class="option-btn" onclick="selectOption('*item=1')" id="option-*item=1">
+                            ${t('level4Option3')}
+                        </button>
+                        <button class="run-button" onclick="runCode()" id="runButton" disabled>
+                            ${t('level4RunButton')}
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('gameContent').innerHTML = content;
+        }
+
+        // Option Selection
+        function selectOption(option) {
+            selectedOption = option;
+            
+            // Remove all selected classes
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            const optionBtn = document.getElementById('option-' + option);
+            if (optionBtn) {
+                optionBtn.classList.add('selected');
+            }
+            
+            // Enable run button
+            document.getElementById('runButton').disabled = false;
+        }
+
+        // Run Code
+        function runCode() {
+            const level = levels[currentLevel];
+            const isCorrect = selectedOption === level.correctAnswer;
+            
+            // Track attempt
+            if (!levelStats[level.id]) {
+                levelStats[level.id] = { attempts: 0, bestXP: 0, completed: false };
+            }
+            levelStats[level.id].attempts++;
+            
+            // Disable run button
+            document.getElementById('runButton').disabled = true;
+            
+            // Disable all options
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.style.pointerEvents = 'none';
+            });
+            
+            if (isCorrect) {
+                // Calculate XP based on attempts
+                const attempts = levelStats[level.id].attempts;
+                let xpEarned = 0;
+                if (attempts === 1) {
+                    xpEarned = 50; // First try
+                } else if (attempts === 2) {
+                    xpEarned = 30; // Second try
+                } else {
+                    xpEarned = 20; // Third+ try
+                }
+                
+                // Update stats only if new XP is better
+                if (xpEarned > levelStats[level.id].bestXP) {
+                    const xpDiff = xpEarned - levelStats[level.id].bestXP;
+                    totalXP += xpDiff;
+                    levelStats[level.id].bestXP = xpEarned;
+                }
+                
+                levelStats[level.id].completed = true;
+                
+                // Save to localStorage
+                localStorage.setItem('chero_totalXP', totalXP.toString());
+                localStorage.setItem('chero_stats', JSON.stringify(levelStats));
+                
+                playSuccess(xpEarned, attempts);
+            } else {
+                // Save attempts even on fail
+                localStorage.setItem('chero_stats', JSON.stringify(levelStats));
+                playFail();
+            }
+        }
+
+        // Success Animation
+        function playSuccess(xpEarned, attempts) {
+            const level = levels[currentLevel];
+            
+            // Mark option as correct
+            const optionBtn = document.getElementById('option-' + selectedOption);
+            if (optionBtn) {
+                optionBtn.classList.add('correct');
+            }
+            
+            // Animate based on level type
+            if (level.type === 'if-else') {
+                // Heal animation
+                const healthBar = document.getElementById('healthBar');
+                setTimeout(() => {
+                    healthBar.style.width = '100%';
+                    healthBar.innerHTML = '❤️ 100 HP';
+                }, 300);
+                
+                const hero = document.getElementById('hero');
+                setTimeout(() => {
+                    hero.textContent = '💪';
+                }, 600);
+                
+            } else if (level.type === 'pointer') {
+                // Door open animation
+                const door = document.getElementById('door');
+                setTimeout(() => {
+                    door.classList.add('open');
+                }, 300);
+                
+                const hero = document.getElementById('hero');
+                setTimeout(() => {
+                    hero.style.transform = 'translateX(100px)';
+                }, 800);
+                
+            } else if (level.type === 'loop') {
+                // Loop animation - hero walks 3 steps
+                let steps = level.initialSteps;
+                const counter = document.getElementById('stepsCounter');
+                
+                const walkInterval = setInterval(() => {
+                    if (steps > 0) {
+                        steps--;
+                        counter.textContent = steps;
+                    } else {
+                        clearInterval(walkInterval);
+                        const hero = document.getElementById('hero');
+                        hero.textContent = '🎉';
+                    }
+                }, 400);
+                
+            } else if (level.type === 'malloc') {
+                // Malloc animation - item appears with glow
+                const item = document.getElementById('item');
+                setTimeout(() => {
+                    item.style.opacity = '1';
+                    item.style.filter = 'none';
+                    item.style.transform = 'scale(1.2)';
+                    item.style.transition = 'all 0.5s ease';
+                }, 300);
+                
+                setTimeout(() => {
+                    item.style.transform = 'scale(1)';
+                }, 800);
+                
+                const hero = document.getElementById('hero');
+                setTimeout(() => {
+                    hero.textContent = '😎';
+                }, 1000);
+            }
+            
+            // Show result after animation
+            setTimeout(() => {
+                showResult(true, xpEarned, attempts);
+            }, 1500);
+        }
+
+        // Fail Animation
+        function playFail() {
+            const level = levels[currentLevel];
+            
+            // Mark option as wrong
+            const optionBtn = document.getElementById('option-' + selectedOption);
+            if (optionBtn) {
+                optionBtn.classList.add('wrong');
+            }
+            
+            // Flash error
+            const scenePanel = document.getElementById('scenePanel');
+            scenePanel.classList.add('error-flash');
+            
+            // Shake scene
+            if (level.type === 'if-else') {
+                const hero = document.getElementById('hero');
+                setTimeout(() => {
+                    hero.textContent = '💀';
+                }, 300);
+                
+            } else if (level.type === 'pointer') {
+                const scenePanel = document.getElementById('scenePanel');
+                scenePanel.style.animation = 'shake 0.5s ease';
+                
+                const hero = document.getElementById('hero');
+                setTimeout(() => {
+                    hero.textContent = '💥';
+                }, 300);
+                
+            } else if (level.type === 'loop') {
+                // Infinite loop animation - accelerating hero
+                const hero = document.getElementById('hero');
+                scenePanel.style.filter = 'blur(3px)';
+                
+                let rotations = 0;
+                const spinInterval = setInterval(() => {
+                    rotations += 45;
+                    hero.style.transform = `rotate(${rotations}deg)`;
+                    if (rotations >= 360) {
+                        clearInterval(spinInterval);
+                        hero.textContent = '💀';
+                        hero.style.transform = 'none';
+                    }
+                }, 100);
+                
+            } else if (level.type === 'malloc') {
+                // Segfault animation
+                scenePanel.style.animation = 'shake 0.5s ease';
+                
+                const hero = document.getElementById('hero');
+                setTimeout(() => {
+                    hero.textContent = '💥';
+                }, 300);
+            }
+            
+            // Show result after animation
+            setTimeout(() => {
+                showResult(false);
+            }, 1500);
+        }
+
+        // Show Result
+        function showResult(success, xpEarned = 0, attempts = 0) {
+            const level = levels[currentLevel];
+            
+            if (success && !completedLevels.includes(level.id)) {
+                completedLevels.push(level.id);
+                localStorage.setItem('chero_completed', JSON.stringify(completedLevels));
+            }
+            
+            // Check if all levels are completed
+            const allLevelsCompleted = levels.every(lvl => completedLevels.includes(lvl.id));
+            
+            // Determine attempt text
+            let attemptText = '';
+            if (success) {
+                if (attempts === 1) attemptText = t('attempt1');
+                else if (attempts === 2) attemptText = t('attempt2');
+                else attemptText = t('attempt3');
+            }
+            
+            const content = `
+                <div class="result-screen fade-in">
+                    <div class="result-icon">${success ? '✅' : '❌'}</div>
+                    <h2 class="result-title ${success ? 'success' : 'error'}">
+                        ${success ? t('level' + level.id + 'SuccessTitle') : t('level' + level.id + 'FailTitle')}
+                    </h2>
+                    <p class="result-message">
+                        ${success ? t('level' + level.id + 'SuccessMessage') : t('level' + level.id + 'FailMessage')}
+                    </p>
+                    
+                    ${success ? `
+                        <div style="background: rgba(0, 255, 136, 0.1); border: 2px solid var(--primary); border-radius: 15px; padding: 20px; margin: 20px 0;">
+                            <div style="font-size: 2rem; color: var(--primary); font-weight: 900; margin-bottom: 10px;">
+                                +${xpEarned} XP
+                            </div>
+                            <div style="color: var(--text-muted); font-size: 1rem;">
+                                ${attemptText}
+                            </div>
+                        </div>
+                        
+                        <div class="insight-box">
+                            <div class="insight-title">${t('level' + level.id + 'InsightTitle')}</div>
+                            <div class="insight-text">${t('level' + level.id + 'Insight')}</div>
+                        </div>
+                    ` : ''}
+                    
+                    <div>
+                        ${success && !allLevelsCompleted ? `
+                            <button class="btn btn-primary" onclick="showMenu()">
+                                ${t('nextLevel')}
+                            </button>
+                        ` : ''}
+                        
+                        ${success && allLevelsCompleted ? `
+                            <button class="btn btn-primary" onclick="showFinal()">
+                                ${t('showFinal')}
+                            </button>
+                        ` : ''}
+                        
+                        ${!success ? `
+                            <button class="btn btn-primary" onclick="showLevel()">
+                                ${t('tryAgain')}
+                            </button>
+                        ` : ''}
+                        
+                        <button class="btn btn-secondary" onclick="showMenu()">
+                            ${t('backToMenu')}
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('gameContent').innerHTML = content;
+        }
+
+        // Next Level
+        function nextLevel() {
+            currentLevel++;
+            selectedOption = null;
+            showLevel();
+        }
+
+        // Final Screen
+        function showFinal() {
+            const content = `
+                <div class="result-screen fade-in">
+                    <div class="result-icon">🏆</div>
+                    <h2 class="result-title success">${t('finalTitle')}</h2>
+                    <p class="result-message">${t('finalMessage')}</p>
+                    
+                    <div style="background: rgba(0, 255, 136, 0.1); border: 2px solid var(--primary); border-radius: 15px; padding: 30px; margin: 30px 0;">
+                        <div style="font-size: 2.5rem; color: var(--primary); font-weight: 900; margin-bottom: 15px;">
+                            ${totalXP} XP
+                        </div>
+                        <div style="color: var(--text-muted); font-size: 1.1rem;">
+                            ${t('totalXP')}
+                        </div>
+                    </div>
+                    
+                    <div class="insight-box">
+                        <div class="insight-title">${t('finalLearned')}</div>
+                        <div class="insight-text" style="text-align: left;">
+                            • ${t('finalSkill1')}<br>
+                            • ${t('finalSkill2')}<br>
+                            • ${t('finalSkill3')}<br>
+                            • ${t('finalSkill4')}
+                        </div>
+                    </div>
+                    
+                    <div class="insight-box" style="background: rgba(0, 212, 255, 0.1); border-color: var(--accent);">
+                        <div class="insight-title" style="color: var(--accent);">${t('finalNextTitle')}</div>
+                        <div class="insight-text">${t('finalNextMessage')}</div>
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <button class="btn btn-primary" onclick="showMenu()">
+                            ${t('finalButton')}
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('gameContent').innerHTML = content;
+        }
+
+        // Statistics
+        function showStats() {
+            const content = `
+                <div class="result-screen fade-in">
+                    <h2 class="result-title" style="color: var(--primary);">${t('statsTitle')}</h2>
+                    
+                    <div style="text-align: left; margin: 30px 0;">
+                        ${levels.map(level => {
+                            const stats = levelStats[level.id] || { attempts: 0, bestXP: 0, completed: false };
+                            return `
+                                <div style="background: var(--bg-light); border: 2px solid rgba(0, 255, 136, 0.2); border-radius: 10px; padding: 20px; margin-bottom: 15px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                        <div style="font-size: 1.2rem; font-weight: 700;">${t('level' + level.id + 'Title')}</div>
+                                        <div>${stats.completed ? t('statsCompleted') : t('statsNotCompleted')}</div>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; color: var(--text-muted);">
+                                        <div>${t('statsAttempts')}: ${stats.attempts}</div>
+                                        <div>${t('statsBestXP')}: ${stats.bestXP} XP</div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    
+                    <div style="background: rgba(0, 255, 136, 0.1); border: 2px solid var(--primary); border-radius: 15px; padding: 20px; margin: 20px 0;">
+                        <div style="font-size: 1.5rem; color: var(--primary); font-weight: 900;">
+                            ${t('totalXP')}: ${totalXP} XP
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="showMenu()">
+                        ${t('statsClose')}
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('gameContent').innerHTML = content;
+        }
+
+        // Reset Progress Confirmation
+        function confirmReset() {
+            const content = `
+                <div class="result-screen fade-in">
+                    <div class="result-icon">⚠️</div>
+                    <h2 class="result-title" style="color: var(--accent);">${t('resetTitle')}</h2>
+                    <p class="result-message">${t('resetMessage')}</p>
+                    
+                    <div style="margin-top: 30px;">
+                        <button class="btn" style="background: var(--error); color: white; margin: 10px;" onclick="resetProgress()">
+                            ${t('resetConfirm')}
+                        </button>
+                        <button class="btn btn-secondary" onclick="showMenu()">
+                            ${t('resetCancel')}
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('gameContent').innerHTML = content;
+        }
+
+        // Reset Progress
+        function resetProgress() {
+            // Clear all data
+            localStorage.removeItem('chero_completed');
+            localStorage.removeItem('chero_totalXP');
+            localStorage.removeItem('chero_stats');
+            
+            // Reset variables
+            completedLevels = [];
+            totalXP = 0;
+            levelStats = {};
+            
+            // Reinitialize stats
+            levels.forEach(level => {
+                levelStats[level.id] = {
+                    attempts: 0,
+                    bestXP: 0,
+                    completed: false
+                };
+            });
+            
+            // Show menu
+            showMenu();
+        }
+
+        // Initialize
+        startGame();
+    </script>
+</body>
+</html>

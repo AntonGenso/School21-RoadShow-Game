@@ -295,24 +295,24 @@
                 <span class="badge" id="game1Badge">Доступно</span>
             </div>
 
-            <!-- Game 2: Coming Soon -->
-            <div class="game-card locked" onclick="showComingSoon()">
-                <span class="game-icon">🎯</span>
-                <h2 class="game-title" id="game2Title">Игра 2</h2>
+            <!-- Game 2: C Hero -->
+            <div class="game-card" onclick="playGame('c-hero')">
+                <span class="game-icon">💻</span>
+                <h2 class="game-title" id="game2Title">C Hero: Code → Run → Survive</h2>
                 <p class="game-description" id="game2Desc">
-                    Новая захватывающая игра уже в разработке! Скоро будет доступна...
+                    Изучите основы языка C в игровой форме. Выживите используя правильный код!
                 </p>
                 <div class="game-meta">
                     <div class="game-meta-item">
                         <span>⏱</span>
-                        <span id="game2Time">Скоро</span>
+                        <span id="game2Time">5-7 мин</span>
                     </div>
                     <div class="game-meta-item">
                         <span>📊</span>
-                        <span id="game2Level">? уровней</span>
+                        <span id="game2Level">2 уровня</span>
                     </div>
                 </div>
-                <span class="badge coming-soon" id="game2Badge">Скоро</span>
+                <span class="badge" id="game2Badge">Доступно</span>
             </div>
         </div>
     </div>
@@ -325,28 +325,28 @@
                 langBtn: "🌍 O'zbekcha",
                 game1Title: 'UX Hero: Design Sprint',
                 game1Desc: 'Спаси продукты от плохого UX! Пройди 4 миссии и стань настоящим UX дизайнером.',
-                game1Time: '10-15 мин',
+                game1Time: '3-5 мин',
                 game1Level: '4 уровня',
                 game1Badge: 'Доступно',
-                game2Title: 'Игра 2',
-                game2Desc: 'Новая захватывающая игра уже в разработке! Скоро будет доступна...',
-                game2Time: 'Скоро',
-                game2Level: '? уровней',
-                game2Badge: 'Скоро',
+                game2Title: 'C Hero: Code → Run → Survive',
+                game2Desc: 'Изучите основы языка C в игровой форме. Выживите используя правильный код!',
+                game2Time: '3-5 мин',
+                game2Level: '4 уровня',
+                game2Badge: 'Доступно',
                 comingSoon: 'Эта игра скоро будет доступна! 🎮'
             },
             uz: {
                 langBtn: '🌍 Русский',
                 game1Title: 'UX Qahramoni: Dizayn Sprint',
                 game1Desc: "Mahsulotlarni yomon UX dan qutqaring! 4 ta topshiriqni bajaring va haqiqiy UX dizayner bo'ling.",
-                game1Time: '10-15 daq',
+                game1Time: '3-5 daq',
                 game1Level: '4 daraja',
                 game1Badge: 'Mavjud',
-                game2Title: "O'yin 2",
-                game2Desc: "Yangi qiziqarli o'yin ishlab chiqilmoqda! Tez orada mavjud bo'ladi...",
-                game2Time: 'Tez orada',
-                game2Level: '? daraja',
-                game2Badge: 'Tez orada',
+                game2Title: "C Hero: Kod → Ishga tushir → Omon qol",
+                game2Desc: "C dasturlash tilining asoslarini o'yin orqali o'rganing. To'g'ri kod yozib omon qoling!",
+                game2Time: '3-5 daq',
+                game2Level: '4 daraja',
+                game2Badge: 'Mavjud',
                 comingSoon: "Bu o'yin tez orada mavjud bo'ladi! 🎮"
             }
         };
@@ -381,10 +381,10 @@
                 localStorage.setItem('uxhero_language', currentLanguage);
                 // Переходим к игре
                 window.location.href = 'ux-hero-game.html';
-            } else if (gameId === 'game2') {
-                // Для второй игры (пока не готова)
-                localStorage.setItem('game2_language', currentLanguage);
-                window.location.href = 'game2.html';
+            } else if (gameId === 'c-hero') {
+                // Для второй игры
+                localStorage.setItem('chero_language', currentLanguage);
+                window.location.href = 'c-hero-game.html';
             }
         }
 

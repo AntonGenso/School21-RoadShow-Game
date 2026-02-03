@@ -572,25 +572,265 @@
         }
         
         @media (max-width: 768px) {
-            .action-buttons {
-                flex-direction: column;
+            body {
+                font-size: 14px;
             }
-            .action-buttons .btn {
-                width: 100%;
+
+            .container {
+                padding: 15px;
             }
-            
+
+            /* Header */
             .game-header {
                 flex-direction: column;
                 gap: 15px;
+                padding: 15px;
+                text-align: center;
             }
             
             .game-header > div:first-child {
                 display: none; /* Скрываем spacer */
             }
+
+            .game-header-center {
+                width: 100%;
+            }
+
+            .game-title {
+                font-size: 2rem;
+            }
+
+            .game-subtitle {
+                font-size: 0.9rem;
+            }
             
             .lang-button {
                 width: 100%;
                 max-width: 200px;
+                margin: 0 auto;
+            }
+
+            /* Career Progress */
+            .career-progress {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px;
+                gap: 15px;
+            }
+
+            .career-info {
+                width: 100%;
+            }
+
+            .career-icon {
+                font-size: 2.5rem;
+                width: 60px;
+                height: 60px;
+            }
+
+            .career-title {
+                font-size: 1.1rem;
+            }
+
+            .career-level {
+                font-size: 0.8rem;
+            }
+
+            .xp-bar {
+                margin-left: 0;
+                margin-top: 0;
+                max-width: 100%;
+                width: 100%;
+            }
+
+            /* Buttons */
+            .action-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .action-buttons .btn {
+                width: 100%;
+            }
+
+            .btn {
+                padding: 12px 25px;
+                font-size: 0.95rem;
+            }
+
+            /* Mission Cards */
+            .mission-card {
+                padding: 20px;
+            }
+
+            .mission-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .mission-title {
+                font-size: 1.3rem;
+            }
+
+            .mission-client {
+                font-size: 0.85rem;
+            }
+
+            .difficulty-badge {
+                font-size: 0.75rem;
+                padding: 4px 10px;
+            }
+
+            /* Options */
+            .options-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .option-card {
+                padding: 15px;
+            }
+
+            .option-title {
+                font-size: 1rem;
+            }
+
+            .option-description {
+                font-size: 0.85rem;
+            }
+
+            /* AB Test */
+            .ab-test-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .variant-card {
+                padding: 15px;
+            }
+
+            .variant-label {
+                font-size: 0.9rem;
+                padding: 6px 12px;
+            }
+
+            /* Phone Mockups */
+            .phone-mockup {
+                max-width: 280px;
+                margin: 0 auto;
+            }
+
+            .phone-screen {
+                padding: 15px;
+            }
+
+            .phone-screen h3 {
+                font-size: 1rem;
+            }
+
+            .phone-screen p {
+                font-size: 0.8rem;
+            }
+
+            .phone-screen button,
+            .phone-screen input {
+                font-size: 0.85rem;
+                padding: 10px;
+            }
+
+            /* Results */
+            .results-content {
+                padding: 20px;
+            }
+
+            .results-title {
+                font-size: 1.5rem;
+            }
+
+            .xp-display {
+                font-size: 2.5rem;
+                padding: 20px;
+            }
+
+            .metric-card {
+                padding: 15px;
+            }
+
+            .metric-value {
+                font-size: 1.8rem;
+            }
+
+            .metric-label {
+                font-size: 0.85rem;
+            }
+
+            /* Final Screen */
+            .final-screen {
+                padding: 30px 15px;
+            }
+
+            .final-title {
+                font-size: 2rem;
+            }
+
+            .final-subtitle {
+                font-size: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+
+            .skills-list {
+                padding: 15px;
+            }
+
+            .skill-item {
+                padding: 12px;
+                font-size: 0.9rem;
+            }
+
+            /* Statistics Modal */
+            .stats-content {
+                padding: 20px;
+                max-height: 70vh;
+                overflow-y: auto;
+            }
+
+            .stats-table {
+                font-size: 0.85rem;
+            }
+
+            /* Language Selection */
+            .language-selection {
+                padding: 20px;
+            }
+
+            .language-card {
+                padding: 30px 20px;
+            }
+
+            .language-icon {
+                font-size: 4rem;
+            }
+
+            .language-title {
+                font-size: 2rem;
+            }
+
+            .language-btn {
+                font-size: 1.1rem;
+                padding: 18px;
             }
         }
 
@@ -694,22 +934,6 @@
             font-size: 1.1rem;
         }
 
-        @media (max-width: 768px) {
-            .ab-test-container {
-                grid-template-columns: 1fr;
-            }
-
-            .xp-bar {
-                margin-left: 0;
-                margin-top: 15px;
-                max-width: 100%;
-            }
-
-            .career-progress {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
     </style>
 </head>
 <body>
