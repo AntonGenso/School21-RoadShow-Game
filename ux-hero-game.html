@@ -1,0 +1,2729 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX Hero: Design Sprint</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366F1;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --bg: #0F172A;
+            --bg-light: #1E293B;
+            --bg-card: #334155;
+            --text: #F8FAFC;
+            --text-muted: #94A3B8;
+            --accent: #EC4899;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+                linear-gradient(225deg, rgba(236, 72, 153, 0.05) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.6s ease-out;
+        }
+        
+        .game-header-center {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .lang-button {
+            padding: 10px 20px;
+            background: var(--bg-light);
+            border: 2px solid rgba(99, 102, 241, 0.3);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .lang-button:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .game-title {
+            font-weight: 900;
+            font-size: 2.5rem;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .game-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* Progress bar */
+        .career-progress {
+            background: var(--bg-light);
+            border-radius: 20px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .career-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .career-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .career-details h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .career-level {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .xp-bar {
+            flex: 1;
+            max-width: 300px;
+            margin-left: 30px;
+        }
+
+        .xp-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .xp-track {
+            height: 12px;
+            background: var(--bg);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .xp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            transition: width 1s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .xp-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Mission card */
+        .mission-card {
+            background: var(--bg-light);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+
+        .mission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+        }
+
+        .mission-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .mission-client {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mission-reward {
+            text-align: right;
+        }
+
+        .reward-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .reward-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .mission-problem {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--error);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .mission-problem strong {
+            color: var(--error);
+        }
+
+        /* Game screen */
+        .game-screen {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            min-height: 400px;
+            animation: fadeInUp 0.6s ease-out 0.6s both;
+        }
+
+        .screen-title {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+
+        /* Phone mockup */
+        .phone-container {
+            max-width: 340px;
+            margin: 0 auto;
+        }
+
+        .phone-mockup {
+            background: #1F1F1F;
+            border-radius: 40px;
+            padding: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .phone-screen {
+            background: #FFFFFF;
+            border-radius: 25px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .app-header {
+            background: #F8F9FA;
+            padding: 15px 20px;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-title {
+            font-weight: 600;
+            color: #1F2937;
+            font-size: 1rem;
+        }
+
+        .app-content {
+            padding: 25px 20px;
+            min-height: 400px;
+        }
+
+        /* Interactive elements */
+        .interactive-button {
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: block;
+            width: 100%;
+        }
+
+        .btn-bad {
+            background: #E5E7EB;
+            color: #6B7280;
+            font-size: 0.75rem;
+            padding: 8px 16px;
+        }
+
+        .btn-fixed {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            transform: scale(1.05);
+        }
+
+        .btn-fixed:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .choice-buttons {
+            display: grid;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .choice-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            padding: 18px 20px;
+            border-radius: 12px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .choice-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .choice-btn.correct {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--success);
+            animation: correctPulse 0.5s;
+        }
+
+        .choice-btn.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--error);
+            animation: shake 0.5s;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        /* Form elements */
+        .form-field {
+            margin-bottom: 15px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .form-field:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 8px;
+            padding: 5px;
+            margin: 0 -5px 15px -5px;
+        }
+
+        .form-field:hover::after {
+            content: '❌ Удалить';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            color: var(--error);
+            font-weight: 600;
+            background: var(--bg);
+            padding: 4px 8px;
+            border-radius: 4px;
+            z-index: 10;
+        }
+
+        .form-label {
+            display: block;
+            color: #374151;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #1F2937;
+        }
+
+        .form-field.unnecessary {
+            opacity: 0.5;
+            position: relative;
+        }
+
+        .form-field.unnecessary::after {
+            content: '❌ Лишнее';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            color: var(--error);
+            font-weight: 600;
+        }
+
+        .delete-btn {
+            position: absolute;
+            right: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            background: var(--error);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: none;
+        }
+
+        .form-field:hover .delete-btn {
+            display: block;
+        }
+
+        /* Result screen */
+        .result-screen {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .result-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .result-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .metric-change {
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .metric-change.up {
+            color: var(--success);
+        }
+
+        .metric-change.down {
+            color: var(--error);
+        }
+
+        .user-feedback {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+            font-style: italic;
+        }
+
+        .lesson-box {
+            background: rgba(99, 102, 241, 0.1);
+            border: 2px solid var(--primary);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .lesson-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lesson-text {
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        @media (max-width: 768px) {
+            * {
+                box-sizing: border-box;
+            }
+
+            html, body {
+                width: 100%;
+                overflow-x: hidden !important;
+            }
+
+            body {
+                font-size: 14px;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .container {
+                padding: 10px !important;
+                max-width: 100% !important;
+                margin: 0 auto !important;
+            }
+
+            /* Header */
+            .game-header {
+                flex-direction: column !important;
+                gap: 12px !important;
+                padding: 15px 10px !important;
+                text-align: center;
+                margin-bottom: 20px !important;
+            }
+            
+            .game-header > div:first-child {
+                display: none !important; /* Скрываем spacer */
+            }
+
+            .game-header-center {
+                width: 100% !important;
+            }
+
+            .game-title {
+                font-size: 1.75rem !important;
+                margin-bottom: 5px !important;
+            }
+
+            .game-subtitle {
+                font-size: 0.85rem !important;
+            }
+            
+            .lang-button {
+                width: auto !important;
+                max-width: 180px !important;
+                margin: 0 auto !important;
+                padding: 8px 16px !important;
+                font-size: 0.9rem !important;
+            }
+
+            /* Career Progress */
+            .career-progress {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                padding: 15px !important;
+                gap: 12px !important;
+                margin-bottom: 20px !important;
+            }
+
+            .career-info {
+                width: 100% !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 12px !important;
+            }
+
+            .career-icon {
+                font-size: 2.5rem !important;
+                width: 55px !important;
+                height: 55px !important;
+                min-width: 55px !important;
+            }
+
+            .career-details {
+                flex: 1 !important;
+            }
+
+            .career-title {
+                font-size: 1.05rem !important;
+                margin-bottom: 4px !important;
+            }
+
+            .career-level {
+                font-size: 0.75rem !important;
+            }
+
+            .xp-bar {
+                margin-left: 0 !important;
+                margin-top: 0 !important;
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+
+            .xp-label {
+                font-size: 0.75rem !important;
+            }
+
+            .xp-fill {
+                height: 8px !important;
+            }
+
+            /* Buttons */
+            .action-buttons {
+                flex-direction: column !important;
+                gap: 10px !important;
+                width: 100% !important;
+            }
+            
+            .action-buttons .btn {
+                width: 100% !important;
+            }
+
+            .btn {
+                padding: 12px 20px !important;
+                font-size: 0.9rem !important;
+                white-space: nowrap;
+            }
+
+            /* Mission Cards */
+            .mission-card {
+                padding: 15px !important;
+                margin-bottom: 15px !important;
+            }
+
+            .mission-header {
+                flex-direction: column !important;
+                gap: 12px !important;
+                align-items: flex-start !important;
+            }
+
+            .mission-title {
+                font-size: 1.2rem !important;
+                line-height: 1.3 !important;
+            }
+
+            .mission-client {
+                font-size: 0.8rem !important;
+            }
+
+            .difficulty-badge {
+                font-size: 0.7rem !important;
+                padding: 4px 8px !important;
+            }
+
+            .mission-description {
+                font-size: 0.9rem !important;
+                line-height: 1.5 !important;
+            }
+
+            /* Options */
+            .options-grid {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
+
+            .option-card {
+                padding: 12px !important;
+            }
+
+            .option-title {
+                font-size: 0.95rem !important;
+            }
+
+            .option-description {
+                font-size: 0.8rem !important;
+                line-height: 1.4 !important;
+            }
+
+            /* AB Test */
+            .ab-test-container {
+                grid-template-columns: 1fr !important;
+                gap: 15px !important;
+            }
+
+            .variant-card {
+                padding: 12px !important;
+            }
+
+            .variant-label {
+                font-size: 0.85rem !important;
+                padding: 5px 10px !important;
+            }
+
+            /* Phone Mockups */
+            .phone-mockup {
+                max-width: 260px !important;
+                margin: 0 auto !important;
+            }
+
+            .phone-screen {
+                padding: 12px !important;
+            }
+
+            .phone-screen h3 {
+                font-size: 0.9rem !important;
+            }
+
+            .phone-screen p {
+                font-size: 0.75rem !important;
+            }
+
+            .phone-screen button,
+            .phone-screen input {
+                font-size: 0.8rem !important;
+                padding: 8px !important;
+            }
+
+            /* Results */
+            .results-content {
+                padding: 15px !important;
+            }
+
+            .results-title {
+                font-size: 1.4rem !important;
+            }
+
+            .xp-display {
+                font-size: 2rem !important;
+                padding: 15px !important;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
+
+            .metric-card {
+                padding: 12px !important;
+            }
+
+            .metric-value {
+                font-size: 1.5rem !important;
+            }
+
+            .metric-label {
+                font-size: 0.8rem !important;
+            }
+
+            /* Final Screen */
+            .final-screen {
+                padding: 25px 12px !important;
+            }
+
+            .final-title {
+                font-size: 1.75rem !important;
+            }
+
+            .final-subtitle {
+                font-size: 0.95rem !important;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }
+
+            .stat-card {
+                padding: 15px !important;
+            }
+
+            .stat-value {
+                font-size: 1.75rem !important;
+            }
+
+            .skills-list {
+                padding: 12px !important;
+            }
+
+            .skill-item {
+                padding: 10px !important;
+                font-size: 0.85rem !important;
+            }
+
+            /* Statistics Modal */
+            .stats-modal {
+                padding: 10px !important;
+            }
+
+            .stats-content {
+                padding: 15px !important;
+                max-height: 65vh !important;
+                overflow-y: auto !important;
+            }
+
+            .stats-title {
+                font-size: 1.4rem !important;
+            }
+
+            .stats-table {
+                font-size: 0.8rem !important;
+            }
+
+            .stats-table th,
+            .stats-table td {
+                padding: 8px 5px !important;
+            }
+
+            /* Language Selection */
+            .language-selection {
+                padding: 15px !important;
+            }
+
+            .language-card {
+                padding: 25px 15px !important;
+            }
+
+            .language-icon {
+                font-size: 3.5rem !important;
+                margin-bottom: 20px !important;
+            }
+
+            .language-title {
+                font-size: 1.75rem !important;
+            }
+
+            .language-subtitle {
+                font-size: 0.9rem !important;
+            }
+
+            .language-buttons {
+                gap: 12px !important;
+            }
+
+            .language-btn {
+                font-size: 1rem !important;
+                padding: 15px !important;
+            }
+
+            /* Mission Menu */
+            .mission-menu {
+                padding: 10px !important;
+            }
+
+            .menu-title {
+                font-size: 1.5rem !important;
+            }
+
+            .menu-subtitle {
+                font-size: 0.85rem !important;
+            }
+        }
+            }
+
+            /* Statistics Modal */
+            .stats-content {
+                padding: 20px;
+                max-height: 70vh;
+                overflow-y: auto;
+            }
+
+            .stats-table {
+                font-size: 0.85rem;
+            }
+
+            /* Language Selection */
+            .language-selection {
+                padding: 20px;
+            }
+
+            .language-card {
+                padding: 30px 20px;
+            }
+
+            .language-icon {
+                font-size: 4rem;
+            }
+
+            .language-title {
+                font-size: 2rem;
+            }
+
+            .language-btn {
+                font-size: 1.1rem;
+                padding: 18px;
+            }
+        }
+
+        .btn {
+            padding: 15px 35px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+        }
+
+        /* A/B Test screens */
+        .ab-test-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .ab-option {
+            cursor: pointer;
+            border: 3px solid transparent;
+            border-radius: 15px;
+            padding: 10px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .ab-option:hover {
+            border-color: var(--primary);
+            transform: scale(1.02);
+        }
+
+        .ab-option.selected {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .ab-label {
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    
+    <div class="container">
+        <div class="game-header">
+            <div style="width: 140px;"></div> <!-- Spacer для центрирования -->
+            <div class="game-header-center">
+                <h1 class="game-title">UX HERO</h1>
+                <p class="game-subtitle" id="gameSubtitle">Спаси продукты от плохого UX 🚀</p>
+            </div>
+            <button class="lang-button" onclick="changeLanguage()" id="langButton">
+                🌍 <span id="langText">Русский</span>
+            </button>
+        </div>
+
+        <div class="career-progress">
+            <div class="career-info">
+                <div class="career-icon">👶</div>
+                <div class="career-details">
+                    <h3 id="careerTitle">Junior Designer</h3>
+                    <div class="career-level" id="careerLevel">Level 1</div>
+                </div>
+            </div>
+            <div class="xp-bar">
+                <div class="xp-label">
+                    <span>XP</span>
+                    <span id="xpText">0 / 500</span>
+                </div>
+                <div class="xp-track">
+                    <div class="xp-fill" id="xpFill" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="gameContent">
+            <!-- Content will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // Language system
+        let currentLanguage = localStorage.getItem('uxhero_language') || null;
+        
+        const translations = {
+            ru: {
+                // Header
+                gameTitle: "UX HERO",
+                gameSubtitle: "Спаси продукты от плохого UX 🚀",
+                
+                // Career
+                juniorDesigner: "Junior Designer",
+                middleDesigner: "Middle Designer", 
+                seniorDesigner: "Senior Designer",
+                leadDesigner: "Lead Designer",
+                level: "Level",
+                xp: "XP",
+                
+                // Mission 1
+                mission1Title: "Никто не жмёт на кнопку!",
+                mission1Client: "🍕 Pizza Express",
+                mission1Problem: 'Конверсия в заказ всего <strong>2%</strong>. Пользователи не находят кнопку "Заказать".',
+                mission1Task: "Задача: Исправь кнопку",
+                mission1ScreenTitle: "Выбери правильное решение:",
+                mission1Option1: "📏 Сделать кнопку больше",
+                mission1Option2: "🎨 Изменить цвет на контрастный",
+                mission1Option3: "✍️ Написать текст большими буквами",
+                mission1Option4: "✅ Все варианты сразу",
+                mission1Alert: "Не совсем! Нужно исправить ВСЁ: размер, цвет И текст.",
+                mission1Lesson: "Призыв к действию (CTA) должен быть заметным, контрастным и находиться в зоне большого пальца.",
+                mission1PizzaName: "Пицца Маргарита",
+                mission1PizzaDesc: "Классическая пицца с моцареллой",
+                mission1OrderButton: "заказать",
+                mission1OrderButtonFixed: "ЗАКАЗАТЬ",
+                
+                // Mission 2
+                mission2Title: "Люди бросают регистрацию",
+                mission2Client: "💪 FitApp",
+                mission2Problem: "<strong>78%</strong> пользователей не завершают регистрацию. Слишком много полей!",
+                mission2Task: "${t('mission2Task')}",
+                mission2Desc: 'Оставь только <strong style="color: var(--accent);">самые необходимые поля</strong> для регистрации. Чем меньше полей - тем выше конверсия!',
+                mission2ScreenTitle: "Кликай на поля чтобы удалить:",
+                mission2Stats: "📊 Статистика",
+                mission2TotalFields: "Всего полей:",
+                mission2Remaining: "Осталось:",
+                mission2Removed: "Удалено:",
+                mission2Hint: '💡 <strong>Совет:</strong> Для регистрации нужен минимум - email и пароль. Всё остальное можно спросить позже!',
+                mission2Button: "✓ Готово, проверить результат",
+                mission2CorrectRemoved: "✅ Правильно удалено",
+                mission2WrongRemoved: "❌ Ошибочно удалено",
+                mission2Experience: "Опыт",
+                mission2Perfect: "🎉 Идеально! Ты оставил только email и пароль - это всё что нужно для регистрации!",
+                mission2Good: "👍 Хорошо! Форма стала проще, но можно было убрать ещё больше лишнего.",
+                mission2Mistake: "😬 Ой! Ты удалил важные поля (email или пароль). Без них регистрация невозможна!",
+                mission2TooMany: "🤔 Ты оставил слишком много полей. Каждое лишнее поле снижает конверсию на 5-10%!",
+                mission2LessonTitle: "💡 Урок UX",
+                mission2LessonText: "<strong>Минимализм в формах:</strong><br>• Email и Пароль - это минимум для регистрации<br>• Остальное можно спросить после (во время онбординга)<br>• Каждое дополнительное поле снижает конверсию на 5-10%<br>• Правило: спрашивай только то, без чего нельзя обойтись прямо сейчас",
+                
+                // Mission 3
+                mission3Title: "A/B тест: какой экран лучше?",
+                mission3Client: "🛒 ShopNow",
+                mission3Problem: "Нужно выбрать лучший вариант экрана оформления заказа.",
+                mission3Task: "${t('mission3Task')}",
+                mission3Desc: "Какой экран даст больше конверсию?",
+                mission3VariantA: "Вариант A",
+                mission3VariantB: "Вариант B",
+                mission3Button: "Выбрать этот вариант",
+                mission3Alert: "Попробуй ещё раз! Вариант B проще: меньше полей, понятнее призыв к действию.",
+                mission3Lesson: "Дизайн — это не вкус, а данные. Всегда тестируй гипотезы на реальных пользователях.",
+                mission3CheckoutA: "Оформление",
+                mission3ItemsCount: "Товаров: 3",
+                mission3AlmostDone: "Почти готово!",
+                mission3YourOrder: "Ваш заказ:",
+                mission3YourPhone: "Ваш телефон",
+                mission3PlaceOrder: "Оформить заказ →",
+                mission3WillCall: "Мы перезвоним для уточнения деталей",
+                mission3Name: "Имя",
+                mission3Comment: "Комментарий",
+                mission3Order: "Заказать",
+                
+                // Mission 4
+                mission4Title: "Что фиксить первым?",
+                mission4Client: "🏦 MoneyApp",
+                mission4Problem: "Куча жалоб от пользователей. Нужно приоритизировать проблемы.",
+                mission4Task: "${t('mission4Task')}",
+                mission4Desc: "Что исправить в первую очередь?",
+                mission4Reviews: "Отзывы пользователей:",
+                mission4Review1: '<strong>😰 "Не могу перевести деньги!"</strong><br><span style="color: var(--text-muted); font-size: 0.85rem;">45 жалоб · Блокирует основную функцию</span>',
+                mission4Review2: '<strong>🤔 "Не понял где история операций"</strong><br><span style="color: var(--text-muted); font-size: 0.85rem;">12 жалоб · Дополнительная функция</span>',
+                mission4Review3: '<strong>🎨 "Не нравится цвет кнопок"</strong><br><span style="color: var(--text-muted); font-size: 0.85rem;">3 жалобы · Визуальное</span>',
+                mission4Review4: '<strong>😅 "Опечатка в слове \'баланс\'"</strong><br><span style="color: var(--text-muted); font-size: 0.85rem;">1 жалоба · Не влияет на функционал</span>',
+                mission4Review5: '<strong>💡 "Хочу темную тему"</strong><br><span style="color: var(--text-muted); font-size: 0.85rem;">8 запросов · Новая фича</span>',
+                mission4Alert: "Подумай ещё раз! Что блокирует больше всего пользователей?",
+                mission4Lesson: "Не все баги одинаково важны. Фиксируй то, что влияет на большинство пользователей.",
+                
+                // Common
+                reward: "Награда",
+                takeTask: "Взять задачу 🚀",
+                sec: "сек",
+                greatWork: "Отличная работа!",
+                conversion: "Конверсия",
+                was: "было",
+                received: "получено",
+                nextTask: "Следующая задача →",
+                finish: "Завершить 🎊",
+                congratulations: "Поздравляем!",
+                finalMessage: 'Ты прошёл все задания и стал настоящим <strong style="color: var(--accent);">{{career}}</strong>!',
+                totalXP: "Общий XP",
+                whatYouLearned: "🎓 Что ты освоил:",
+                skills: "✅ CTA и визуальная иерархия<br>✅ Упрощение форм и флоу<br>✅ A/B тестирование<br>✅ Приоритизация задач<br><br><strong>Ты готов спасать продукты от плохого UX! 🚀</strong>",
+                restart: "🔄 Начать заново",
+                
+                // Final screen
+                congratulationsTitle: "Поздравляем!",
+                finalMessage: "Ты прошёл все миссии и стал настоящим",
+                uxHero: "UX Hero",
+                totalExperience: "Всего опыта",
+                career: "Карьера",
+                youLearned: "🎯 Ты научился:",
+                learnedSkills: "• Делать заметные призывы к действию<br>• Упрощать формы для роста конверсии<br>• Тестировать гипотезы на данных<br>• Приоритизировать проблемы по impact",
+                backToMenuFinal: "📋 Вернуться в меню",
+                menuButton: "Меню",
+                
+                // Form fields
+                email: "Email",
+                password: "Пароль",
+                patronymic: "Отчество",
+                birthdate: "Дата рождения",
+                height: "Рост (см)",
+                weight: "Вес (кг)",
+                address: "Адрес",
+                phone: "Телефон",
+                inn: "ИНН",
+                register: "Зарегистрироваться",
+                registration: "Регистрация",
+                
+                // User feedback
+                feedback1: '"Наконец-то нашёл кнопку! Заказал пиццу за секунду 🍕"',
+                feedback2: '"Зарегистрировалась за 20 секунд, класс!"',
+                feedback3: '"Вариант B намного понятнее, оформил заказ сразу"',
+                feedback4: '"Отлично, что починили переводы! Теперь всё работает"',
+                
+                // Menu
+                chooseMission: "Выбери миссию",
+                playAnyOrder: "Играй в любом порядке или попробуй улучшить результат",
+                showStats: "Показать статистику",
+                resetProgress: "Сбросить прогресс",
+                backToMenu: "В меню",
+                tryAgain: "Попробовать ещё раз",
+                continue: "Продолжить",
+                bestResult: "Лучший результат",
+                bestTime: "Лучшее время",
+                attempts: "Попыток",
+                completed: "Пройдено! Попробуй улучшить результат",
+                belowPassing: "Результат ниже проходного балла",
+                tryAgainMsg: "Попробуй ещё раз!",
+                excellentResult: "Отличный результат! Попробуй улучшить ещё",
+                passingScore: "Проходной балл",
+                uxLesson: "Урок UX",
+                perfect: "Идеально!",
+                result: "Результат"
+            },
+            
+            uz: {
+                // Header
+                gameTitle: "UX HERO",
+                gameSubtitle: "Mahsulotlarni yomon UX dan qutqar 🚀",
+                
+                // Career
+                juniorDesigner: "Junior Dizayner",
+                middleDesigner: "Middle Dizayner",
+                seniorDesigner: "Senior Dizayner",
+                leadDesigner: "Lead Dizayner",
+                level: "Daraja",
+                xp: "Tajriba",
+                
+                // Mission 1
+                mission1Title: "Hech kim tugmani bosmayapti!",
+                mission1Client: "🍕 Pizza Express",
+                mission1Problem: 'Buyurtmaga konversiya atigi <strong>2%</strong>. Foydalanuvchilar "Buyurtma berish" tugmasini topa olmayapti.',
+                mission1Task: "Vazifa: Tugmani tuzat",
+                mission1ScreenTitle: "To\'g\'ri yechimni tanla:",
+                mission1Option1: "📏 Tugmani kattaroq qilish",
+                mission1Option2: "🎨 Rangni kontrastli qilish",
+                mission1Option3: "✍️ Matnni katta harflar bilan yozish",
+                mission1Option4: "✅ Barcha variantlar birga",
+                mission1Alert: "To'liq emas! HAMMASINI tuzatish kerak: o'lcham, rang VA matn.",
+                mission1Lesson: "Harakatga chaqiruv (CTA) ko'zga ko'rinishi, kontrastli va katta barmoq zonasida bo'lishi kerak.",
+                mission1PizzaName: "Margarita pizza",
+                mission1PizzaDesc: "Mozzarella pishlog'i bilan klassik pizza",
+                mission1OrderButton: "buyurtma",
+                mission1OrderButtonFixed: "BUYURTMA BERISH",
+                
+                // Mission 2
+                mission2Title: "Odamlar ro'yxatdan o'tishni tashlab ketishyapti",
+                mission2Client: "💪 FitApp",
+                mission2Problem: "<strong>78%</strong> foydalanuvchilar ro'yxatdan o'tishni tugallamayapti. Juda ko'p maydonlar!",
+                mission2Task: "Vazifa: Formani soddalashtir",
+                mission2Desc: 'Ro\'yxatdan o\'tish uchun faqat <strong style="color: var(--accent);">eng zarur maydonlarni</strong> qoldiring. Maydonlar kamroq - konversiya yuqoriroq!',
+                mission2ScreenTitle: "O'chirish uchun maydonlarni bosing:",
+                mission2Stats: "📊 Statistika",
+                mission2TotalFields: "Jami maydonlar:",
+                mission2Remaining: "Qoldi:",
+                mission2Removed: "O'chirildi:",
+                mission2Hint: '💡 <strong>Maslahat:</strong> Ro\'yxatdan o\'tish uchun minimum - email va parol. Qolganini keyinroq so\'rash mumkin!',
+                mission2Button: "✓ Tayyor, natijani tekshirish",
+                mission2CorrectRemoved: "✅ To'g'ri o'chirildi",
+                mission2WrongRemoved: "❌ Xato o'chirildi",
+                mission2Experience: "Tajriba",
+                mission2Perfect: "🎉 Zo'r! Faqat email va parolni qoldirdingiz - ro'yxatdan o'tish uchun kerak bo'lgan narsa shu!",
+                mission2Good: "👍 Yaxshi! Forma soddaroq bo'ldi, lekin ko'proq ortiqchasini olib tashlash mumkin edi.",
+                mission2Mistake: "😬 Voy! Muhim maydonlarni o'chirib yubordingiz (email yoki parol). Ularsiz ro'yxatdan o'tish mumkin emas!",
+                mission2TooMany: "🤔 Juda ko'p maydonni qoldirib yubordingiz. Har bir ortiqcha maydon konversiyani 5-10% ga kamaytiradi!",
+                mission2LessonTitle: "💡 UX Darsi",
+                mission2LessonText: "<strong>Formalarda minimalizm:</strong><br>• Email va Parol - ro'yxatdan o'tish uchun minimum<br>• Qolganini keyinroq so'rash mumkin (onboarding paytida)<br>• Har bir qo'shimcha maydon konversiyani 5-10% ga kamaytiradi<br>• Qoida: hozir bo'lmasdan bo'lmaydigan narsalarni so'rang",
+                
+                // Mission 3
+                mission3Title: "A/B test: qaysi ekran yaxshi?",
+                mission3Client: "🛒 ShopNow",
+                mission3Problem: "Buyurtmani rasmiylashtirish ekranining eng yaxshi variantini tanlash kerak.",
+                mission3Task: "Vazifa: Eng yaxshi variantni tanla",
+                mission3Desc: "Qaysi ekran ko'proq konversiya beradi?",
+                mission3VariantA: "Variant A",
+                mission3VariantB: "Variant B",
+                mission3Button: "Ushbu variantni tanlash",
+                mission3Alert: "Yana bir bor urinib ko'ring! Variant B oddiyroq: kamroq maydon, aniqroq harakatga chaqiruv.",
+                mission3Lesson: "Dizayn - bu ta'm emas, balki ma'lumotlar. Har doim haqiqiy foydalanuvchilar bilan gipotezalarni sinab ko'ring.",
+                mission3CheckoutA: "Rasmiylashtirish",
+                mission3ItemsCount: "Mahsulotlar: 3",
+                mission3AlmostDone: "Deyarli tayyor!",
+                mission3YourOrder: "Sizning buyurtmangiz:",
+                mission3YourPhone: "Telefon raqamingiz",
+                mission3PlaceOrder: "Buyurtma berish →",
+                mission3WillCall: "Tafsilotlarni aniqlash uchun qo'ng'iroq qilamiz",
+                mission3Name: "Ism",
+                mission3Comment: "Izoh",
+                mission3Order: "Buyurtma berish",
+                
+                // Mission 4
+                mission4Title: "Birinchi navbatda nimani tuzatish kerak?",
+                mission4Client: "🏦 MoneyApp",
+                mission4Problem: "Foydalanuvchilardan ko'p shikoyatlar. Muammolarni ustuvorlashtirish kerak.",
+                mission4Task: "Vazifa: Ustuvorliklarni belgilang",
+                mission4Desc: "Birinchi navbatda nimani tuzatish kerak?",
+                mission4Reviews: "Foydalanuvchi sharhlari:",
+                mission4Review1: '<strong>😰 "Pul o\'tkaza olmayapman!"</strong><br><span style="color: var(--text-muted); font-size: 0.85rem;">45 ta shikoyat · Asosiy funksiyani bloklamoqda</span>',
+                mission4Review2: '<strong>🤔 "Operatsiyalar tarixi qayerdaligini tushunmadim"</strong><br><span style="color: var(--text-muted); font-size: 0.85rem;">12 ta shikoyat · Qo\'shimcha funksiya</span>',
+                mission4Review3: '<strong>🎨 "Tugmalar rangi yoqmadi"</strong><br><span style="color: var(--text-muted); font-size: 0.85rem;">3 ta shikoyat · Vizual</span>',
+                mission4Review4: '<strong>😅 "\'Balans\' so\'zida imlo xatosi"</strong><br><span style="color: var(--text-muted); font-size: 0.85rem;">1 ta shikoyat · Funksiyaga ta\'sir qilmaydi</span>',
+                mission4Review5: '<strong>💡 "Qorong\'u rejimni xohlayman"</strong><br><span style="color: var(--text-muted); font-size: 0.85rem;">8 ta so\'rov · Yangi imkoniyat</span>',
+                mission4Alert: "Yana o'ylab ko'ring! Ko'pchilik foydalanuvchilarni nima bloklayapti?",
+                mission4Lesson: "Barcha xatolar bir xil ahamiyatga ega emas. Ko'pchilik foydalanuvchilarga ta'sir qiladiganini tuzating.",
+                
+                // Common
+                reward: "Mukofot",
+                takeTask: "Vazifani olish 🚀",
+                sec: "son",
+                greatWork: "Zo'r ish!",
+                conversion: "Konversiya",
+                was: "edi",
+                received: "olingan",
+                nextTask: "Keyingi vazifa →",
+                finish: "Yakunlash 🎊",
+                congratulations: "Tabriklaymiz!",
+                finalMessage: 'Siz barcha vazifalarni bajardingiz va haqiqiy <strong style="color: var(--accent);">{{career}}</strong> bo\'ldingiz!',
+                totalXP: "Jami tajriba",
+                whatYouLearned: "🎓 O'rganganlaringiz:",
+                skills: "✅ CTA va vizual ierarxiya<br>✅ Formalar va oqimni soddalashtirish<br>✅ A/B test<br>✅ Vazifalarni ustuvorlashtirish<br><br><strong>Siz mahsulotlarni yomon UX dan qutqarishga tayyorsiz! 🚀</strong>",
+                restart: "🔄 Qaytadan boshlash",
+                
+                // Final screen
+                congratulationsTitle: "Tabriklaymiz!",
+                finalMessage: "Siz barcha topshiriqlarni bajardingiz va haqiqiy",
+                uxHero: "UX Qahramoni",
+                totalExperience: "Jami tajriba",
+                career: "Martaba",
+                youLearned: "🎯 O'rganganlaringiz:",
+                learnedSkills: "• Ko'zga ko'ringan harakatga chaqiruvlar yaratish<br>• Konversiyani oshirish uchun formalarni soddalashtirish<br>• Ma'lumotlar asosida gipotezalarni sinash<br>• Muammolarni ta'sir bo'yicha ustuvorlashtirish",
+                backToMenuFinal: "📋 Menyuga qaytish",
+                menuButton: "Menyu",
+                
+                // Form fields
+                email: "Email",
+                password: "Parol",
+                patronymic: "Otasining ismi",
+                birthdate: "Tug'ilgan sana",
+                height: "Bo'y (sm)",
+                weight: "Vazn (kg)",
+                address: "Manzil",
+                phone: "Telefon",
+                inn: "STIR",
+                register: "Ro'yxatdan o'tish",
+                registration: "Ro'yxatdan o'tish",
+                
+                // User feedback
+                feedback1: '"Nihoyat tugmani topdim! Bir soniyada pizza buyurtma qildim 🍕"',
+                feedback2: '"20 soniyada ro\'yxatdan o\'tdim, ajoyib!"',
+                feedback3: '"Variant B ancha tushunarli, darhol buyurtma berdim"',
+                feedback4: '"Pul o\'tkazmalarni tuzatganingiz uchun rahmat! Endi hammasi ishlayapti"',
+                
+                // Menu
+                chooseMission: "Topshiriqni tanlang",
+                playAnyOrder: "Istalgan tartibda o'ynang yoki natijani yaxshilashga harakat qiling",
+                showStats: "Statistikani ko'rsatish",
+                resetProgress: "Progressni tiklash",
+                backToMenu: "Menyuga",
+                tryAgain: "Yana bir bor urinish",
+                continue: "Davom etish",
+                bestResult: "Eng yaxshi natija",
+                bestTime: "Eng yaxshi vaqt",
+                attempts: "Urinishlar",
+                completed: "Bajarildi! Natijani yaxshilashga harakat qiling",
+                belowPassing: "Natija o'tish ballidan past",
+                tryAgainMsg: "Yana urinib ko'ring!",
+                excellentResult: "Ajoyib natija! Yana yaxshilashga harakat qiling",
+                passingScore: "O'tish bali",
+                uxLesson: "UX Darsi",
+                perfect: "Zo'r!",
+                result: "Natija"
+            }
+        };
+        
+        function t(key) {
+            if (!currentLanguage) return key;
+            return translations[currentLanguage]?.[key] || key;
+        }
+        
+        // Game state
+        let currentLevel = 0;
+        let totalXP = parseInt(localStorage.getItem('uxhero_totalXP') || '0');
+        let careerStage = 0;
+        let currentMissionStep = 'brief';
+        
+        // Детальная статистика для лидерборда
+        let missionStats = JSON.parse(localStorage.getItem('uxhero_stats') || '{}');
+        let gameStartTime = null;
+        let missionStartTime = null;
+
+        // Translations
+
+        function t(key, replacements = {}) {
+            if (!currentLanguage) return key;
+            let text = translations[currentLanguage][key] || key;
+            
+            // Replace placeholders
+            Object.keys(replacements).forEach(placeholder => {
+                text = text.replace(`{{${placeholder}}}`, replacements[placeholder]);
+            });
+            
+            return text;
+        }
+
+        const careerStages = [
+            { titleKey: 'juniorDesigner', icon: '👶', xpNeeded: 500 },
+            { titleKey: 'middleDesigner', icon: '🧑‍💻', xpNeeded: 1500 },
+            { titleKey: 'seniorDesigner', icon: '🦸', xpNeeded: 3000 },
+            { titleKey: 'leadDesigner', icon: '👑', xpNeeded: 5000 }
+        ];
+
+        // Отслеживание пройденных миссий
+        let completedMissions = JSON.parse(localStorage.getItem('uxhero_completed') || '[]');
+        
+        // Проходные баллы для каждой миссии (для отображения ✅ или ❌)
+        const passingScores = {
+            1: 60,   // Level 1: минимум 60 XP (можно с 3-й попытки)
+            2: 70,   // Level 2: минимум 70 XP
+            3: 50,   // Level 3: минимум 50 XP
+            4: 100   // Level 4: минимум 100 XP
+        };
+
+        const missions = [
+            {
+                id: 1,
+                titleKey: 'mission1Title',
+                clientKey: 'mission1Client',
+                problemKey: 'mission1Problem',
+                type: 'fix-button',
+                reward: 100,
+                lessonKey: 'mission1Lesson'
+            },
+            {
+                id: 2,
+                titleKey: 'mission2Title',
+                clientKey: 'mission2Client',
+                problemKey: 'mission2Problem',
+                type: 'simplify-form',
+                reward: 150,
+                lessonKey: 'mission2LessonText'
+            },
+            {
+                id: 3,
+                titleKey: 'mission3Title',
+                clientKey: 'mission3Client',
+                problemKey: 'mission3Problem',
+                type: 'ab-test',
+                reward: 200,
+                lessonKey: 'mission3Lesson'
+            },
+            {
+                id: 4,
+                titleKey: 'mission4Title',
+                clientKey: 'mission4Client',
+                problemKey: 'mission4Problem',
+                type: 'prioritize',
+                reward: 250,
+                lessonKey: 'mission4Lesson'
+            }
+        ];
+
+        function startGame() {
+            console.log('[DEBUG] startGame called, currentLanguage:', currentLanguage);
+            // Check if language is selected
+            if (!currentLanguage) {
+                console.log('[DEBUG] No language, showing language selection');
+                showLanguageSelection();
+                return;
+            }
+            
+            // Инициализируем careerStage на основе totalXP
+            initializeCareerStage();
+            
+            // Update UI with selected language
+            updateUILanguage();
+            updateLanguageButton();
+            
+            console.log('[DEBUG] Calling showMissionMenu()');
+            showMissionMenu();
+        }
+        
+        function initializeCareerStage() {
+            // Определяем текущий уровень карьеры на основе totalXP
+            for (let i = careerStages.length - 1; i >= 0; i--) {
+                if (totalXP >= careerStages[i].xpNeeded) {
+                    careerStage = i;
+                    break;
+                }
+            }
+            
+            // Обновляем UI если элементы существуют
+            const careerTitle = document.getElementById('careerTitle');
+            const careerLevel = document.getElementById('careerLevel');
+            const careerIcon = document.querySelector('.career-icon');
+            
+            if (careerTitle && careerStage < careerStages.length) {
+                careerTitle.textContent = t(careerStages[careerStage].titleKey);
+                careerLevel.textContent = `${t('level')} ${careerStage + 1}`;
+                careerIcon.textContent = careerStages[careerStage].icon;
+            }
+            
+            updateXP();
+        }
+        
+        function showLanguageSelection() {
+            const content = `
+                <div style="display: flex; align-items: center; justify-content: center; min-height: 60vh;">
+                    <div style="max-width: 500px; text-align: center; animation: fadeInUp 0.6s ease-out;">
+                        <div style="font-size: 5rem; margin-bottom: 30px;">🌍</div>
+                        <h2 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 15px;">
+                            Tilni tanlang
+                        </h2>
+                        <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 40px;">
+                            Выберите язык
+                        </p>
+                        <div style="display: grid; gap: 20px;">
+                            <button class="btn btn-primary" onclick="selectLanguage('uz')" 
+                                    style="font-size: 1.3rem; padding: 25px;">
+                                🇺🇿 O'zbekcha
+                            </button>
+                            <button class="btn btn-primary" onclick="selectLanguage('ru')" 
+                                    style="font-size: 1.3rem; padding: 25px;">
+                                🇷🇺 Русский
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('gameContent').innerHTML = content;
+        }
+        
+        function selectLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('uxhero_language', lang);
+            startGame();
+        }
+        
+        function showMissionMenu() {
+            console.log('[DEBUG] showMissionMenu called');
+            const content = `
+                <div class="game-screen" style="max-width: 800px; margin: 0 auto;">
+                    <div style="text-align: center; margin-bottom: 40px; animation: fadeInUp 0.6s ease-out;">
+                        <h2 style="font-size: 2rem; margin-bottom: 10px;">🎯 ${t('chooseMission')}</h2>
+                        <p style="color: var(--text-muted);">${t('playAnyOrder')}</p>
+                    </div>
+                    
+                    <div style="display: grid; gap: 20px;">
+                        ${missions.map((mission, index) => {
+                            const isCompleted = completedMissions.includes(mission.id);
+                            const isLocked = false; // Все уровни разблокированы
+                            const stats = missionStats[mission.id];
+                            
+                            // Определяем иконку: ✅ если >= проходной балл, ❌ если < проходной балл
+                            let icon = t(mission.clientKey).split(' ')[0]; // По умолчанию эмодзи клиента
+                            if (isCompleted && stats) {
+                                const passScore = passingScores[mission.id];
+                                icon = stats.bestXP >= passScore ? '✅' : '❌';
+                            }
+                            
+                            return `
+                                <div class="mission-card" style="cursor: pointer; transition: all 0.3s ease; ${isLocked ? 'opacity: 0.5;' : ''}" 
+                                     onclick="${isLocked ? '' : `selectMission(${index})`}"
+                                     onmouseenter="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 20px 50px rgba(99, 102, 241, 0.3)';"
+                                     onmouseleave="this.style.transform='translateY(0)'; this.style.boxShadow='';">
+                                    <div style="display: flex; align-items: start; gap: 20px;">
+                                        <div style="font-size: 3rem; flex-shrink: 0;">
+                                            ${icon}
+                                        </div>
+                                        <div style="flex: 1;">
+                                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                                                <h3 style="color: var(--text); font-size: 1.2rem; margin: 0;">${t(mission.titleKey)}</h3>
+                                                <div style="background: var(--primary); padding: 8px 15px; border-radius: 20px; font-weight: 700; font-size: 0.9rem;">
+                                                    +${mission.reward} XP
+                                                </div>
+                                            </div>
+                                            <div style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 10px;">
+                                                ${t(mission.clientKey)}
+                                            </div>
+                                            <div style="color: var(--text-muted); font-size: 0.9rem;">
+                                                ${t(mission.problemKey)}
+                                            </div>
+                                            ${isCompleted && stats ? `
+                                                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                                                    <div style="display: flex; gap: 20px; font-size: 0.85rem;">
+                                                        <div>
+                                                            <div style="color: var(--text-muted);">${t('bestResult')}</div>
+                                                            <div style="color: ${stats.bestXP >= passingScores[mission.id] ? 'var(--accent)' : 'var(--error)'}; font-weight: 700; font-size: 1.1rem;">${stats.bestXP} XP</div>
+                                                        </div>
+                                                        ${stats.bestTime !== null ? `
+                                                            <div>
+                                                                <div style="color: var(--text-muted);">${t('bestTime')}</div>
+                                                                <div style="color: var(--success); font-weight: 700; font-size: 1.1rem;">${stats.bestTime}${t('sec')}</div>
+                                                            </div>
+                                                        ` : ''}
+                                                        <div>
+                                                            <div style="color: var(--text-muted);">${t('attempts')}</div>
+                                                            <div style="color: var(--text); font-weight: 700; font-size: 1.1rem;">${stats.attempts}</div>
+                                                        </div>
+                                                    </div>
+                                                    ${stats.bestXP < passingScores[mission.id] ? `
+                                                        <div style="margin-top: 10px; padding: 10px; background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--error); border-radius: 5px; font-size: 0.85rem; color: var(--error);">
+                                                            ⚠️ ${t('belowPassing')} (${passingScores[mission.id]} XP). ${t('tryAgainMsg')}
+                                                        </div>
+                                                    ` : `
+                                                        <div style="margin-top: 10px; color: var(--success); font-size: 0.9rem; font-weight: 600;">
+                                                            🎉 ${t('excellentResult')}
+                                                        </div>
+                                                    `}
+                                                </div>
+                                            ` : ''}
+                                            ${isCompleted && !stats ? `
+                                                <div style="margin-top: 10px; color: var(--success); font-size: 0.9rem; font-weight: 600;">
+                                                    🎉 ${t('completed')}
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 30px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn btn-secondary" onclick="showStats()">
+                            📊 ${t('showStats')}
+                        </button>
+                        <button class="btn btn-secondary" onclick="resetProgress()">
+                            🔄 ${t('resetProgress')}
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('gameContent').innerHTML = content;
+        }
+        
+        function selectMission(index) {
+            currentLevel = index;
+            showMissionBrief();
+        }
+        
+        function changeLanguage() {
+            // Переключаем язык
+            currentLanguage = currentLanguage === 'uz' ? 'ru' : 'uz';
+            localStorage.setItem('uxhero_language', currentLanguage);
+            
+            // Обновляем текст кнопки языка
+            updateLanguageButton();
+            
+            // Обновляем UI
+            updateUILanguage();
+            
+            // Перезагружаем текущий экран чтобы обновить тексты
+            const gameContent = document.getElementById('gameContent');
+            if (gameContent) {
+                // Проверяем что мы в меню миссий (есть mission-card элементы)
+                if (gameContent.querySelector('.mission-card') && !gameContent.querySelector('.phone-mockup')) {
+                    showMissionMenu();
+                }
+            }
+        }
+        
+        function updateLanguageButton() {
+            const langText = document.getElementById('langText');
+            if (langText) {
+                langText.textContent = currentLanguage === 'uz' ? 'Русский' : 'O\'zbekcha';
+            }
+        }
+        
+        function resetProgress() {
+            if (confirm('Вы уверены? Весь прогресс будет удалён.')) {
+                // Очищаем всё
+                localStorage.removeItem('uxhero_completed');
+                localStorage.removeItem('uxhero_stats');
+                localStorage.removeItem('uxhero_totalXP');
+                
+                completedMissions = [];
+                missionStats = {};
+                totalXP = 0;
+                careerStage = 0;
+                
+                // Обновляем UI
+                const careerTitle = document.getElementById('careerTitle');
+                const careerLevel = document.getElementById('careerLevel');
+                const careerIcon = document.querySelector('.career-icon');
+                
+                if (careerTitle) {
+                    careerTitle.textContent = t(careerStages[0].titleKey);
+                    careerLevel.textContent = `${t('level')} 1`;
+                    careerIcon.textContent = careerStages[0].icon;
+                }
+                
+                updateXP();
+                showMissionMenu();
+            }
+        }
+        
+        // Функция для получения статистики игрока (для лидерборда)
+        function getPlayerStats() {
+            const completedCount = completedMissions.length;
+            const totalMissions = missions.length;
+            
+            // Считаем общее количество попыток
+            let totalAttempts = 0;
+            let totalBestXP = 0;
+            let averageTime = 0;
+            let timeCount = 0;
+            
+            Object.values(missionStats).forEach(stat => {
+                totalAttempts += stat.attempts;
+                totalBestXP += stat.bestXP;
+                if (stat.bestTime !== null) {
+                    averageTime += stat.bestTime;
+                    timeCount++;
+                }
+            });
+            
+            averageTime = timeCount > 0 ? Math.floor(averageTime / timeCount) : 0;
+            
+            return {
+                totalXP: totalXP,
+                careerStage: careerStage,
+                careerTitle: t(careerStages[careerStage].titleKey),
+                completedMissions: completedCount,
+                totalMissions: totalMissions,
+                completionRate: Math.floor((completedCount / totalMissions) * 100),
+                totalAttempts: totalAttempts,
+                averageBestXP: totalMissions > 0 ? Math.floor(totalBestXP / totalMissions) : 0,
+                averageTime: averageTime,
+                missionStats: missionStats,
+                timestamp: new Date().toISOString()
+            };
+        }
+        
+        // Добавляем в window для доступа из консоли
+        window.getPlayerStats = getPlayerStats;
+        
+        // Функция для сброса языка (для тестирования)
+        window.resetLanguage = function() {
+            localStorage.removeItem('uxhero_language');
+            currentLanguage = null;
+            console.log('✅ Язык сброшен. Перезагрузите страницу чтобы увидеть экран выбора языка.');
+        };
+        
+        function showStats() {
+            const stats = getPlayerStats();
+            
+            const statsText = `
+📊 СТАТИСТИКА ИГРОКА
+
+🎯 Основное:
+• Всего XP: ${stats.totalXP}
+• Карьера: ${stats.careerTitle} (Уровень ${stats.careerStage + 1})
+• Пройдено миссий: ${stats.completedMissions} / ${stats.totalMissions} (${stats.completionRate}%)
+
+📈 Детально:
+• Всего попыток: ${stats.totalAttempts}
+• Среднее лучшее XP: ${stats.averageBestXP}
+${stats.averageTime > 0 ? `• Среднее время: ${stats.averageTime} секунд` : ''}
+
+📋 По миссиям:
+${missions.map(m => {
+    const s = stats.missionStats[m.id];
+    if (!s) return `${m.client} - Не пройдена`;
+    return `${m.client}
+  • Лучший XP: ${s.bestXP} / ${m.reward}
+  • Попыток: ${s.attempts}
+  • Завершений: ${s.completions}
+  ${s.bestTime !== null ? `• Лучшее время: ${s.bestTime}с` : ''}`;
+}).join('\n\n')}
+
+⏰ Дата: ${new Date(stats.timestamp).toLocaleString('ru-RU')}
+
+---
+Эти данные можно использовать для лидерборда!
+            `.trim();
+            
+            alert(statsText);
+            
+            // Также выводим в консоль в JSON формате
+            console.log('📊 Player Stats (JSON):', stats);
+        }
+        
+        function updateUILanguage() {
+            // Update header if elements exist
+            const title = document.querySelector('.game-title');
+            const subtitle = document.getElementById('gameSubtitle');
+            
+            if (title) title.textContent = t('gameTitle');
+            if (subtitle) subtitle.textContent = t('gameSubtitle');
+        }
+
+        function showMissionBrief() {
+            const mission = missions[currentLevel];
+            currentMissionStep = 'brief';
+
+            const content = `
+                <div class="mission-card">
+                    <div class="mission-header">
+                        <div>
+                            <h2 class="mission-title">${t(mission.titleKey)}</h2>
+                            <div class="mission-client">
+                                <span>${t(mission.clientKey)}</span>
+                            </div>
+                        </div>
+                        <div class="mission-reward">
+                            <div class="reward-label">${t('reward')}</div>
+                            <div class="reward-value">+${mission.reward} XP</div>
+                        </div>
+                    </div>
+                    <div class="mission-problem">
+                        ${t(mission.problemKey)}
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" onclick="showMissionMenu()">
+                            ← ${t('backToMenu')}
+                        </button>
+                        <button class="btn btn-primary" onclick="startMission()">
+                            ${t('takeTask')}
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('gameContent').innerHTML = content;
+        }
+
+        function startMission() {
+            const mission = missions[currentLevel];
+            currentMissionStep = 'game';
+            
+            // Запускаем таймер миссии
+            missionStartTime = Date.now();
+            
+            // Инициализируем статистику миссии если её нет
+            if (!missionStats[mission.id]) {
+                missionStats[mission.id] = {
+                    attempts: 0,
+                    bestXP: 0,
+                    bestTime: null,
+                    totalXP: 0,
+                    completions: 0
+                };
+            }
+            missionStats[mission.id].attempts++;
+            
+            // Reset state
+            selectedAB = null;
+            removedFields = [];
+            
+            let gameContent = '';
+
+            if (mission.type === 'fix-button') {
+                gameContent = createFixButtonGame();
+            } else if (mission.type === 'simplify-form') {
+                gameContent = createSimplifyFormGame();
+                // Start timer after content is loaded
+                setTimeout(() => {
+                    startTimer();
+                }, 100);
+            } else if (mission.type === 'ab-test') {
+                gameContent = createABTestGame();
+            } else if (mission.type === 'prioritize') {
+                gameContent = createPrioritizeGame();
+            }
+
+            document.getElementById('gameContent').innerHTML = gameContent;
+        }
+
+        function createFixButtonGame() {
+            return `
+                <div class="mission-card">
+                    <h3 class="mission-title">${t('mission1Task')}</h3>
+                </div>
+
+                <div class="game-screen">
+                    <div class="screen-title">${t('mission1ScreenTitle')}</div>
+                    
+                    <div class="phone-container">
+                        <div class="phone-mockup">
+                            <div class="phone-screen">
+                                <div class="app-header">
+                                    <div class="app-title">🍕 Pizza Express</div>
+                                    <div>🛒</div>
+                                </div>
+                                <div class="app-content">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='160'%3E%3Crect fill='%23f3f4f6' width='260' height='160' rx='10'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%239ca3af' font-family='system-ui' font-size='14'%3E🍕 Pizza%3C/text%3E%3C/svg%3E" style="width: 100%; border-radius: 10px; margin-bottom: 15px;">
+                                    <h3 style="color: #1F2937; margin-bottom: 8px;">${t('mission1PizzaName')}</h3>
+                                    <p style="color: #6B7280; font-size: 0.9rem; margin-bottom: 15px;">${t('mission1PizzaDesc')}</p>
+                                    <p style="color: #1F2937; font-size: 1.3rem; font-weight: 700; margin-bottom: 20px;">750 ₽</p>
+                                    
+                                    <div id="buttonContainer">
+                                        <button class="interactive-button btn-bad">${t('mission1OrderButton')}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="choice-buttons">
+                        <button class="choice-btn" onclick="fixButton('size')">
+                            ${t('mission1Option1')}
+                        </button>
+                        <button class="choice-btn" onclick="fixButton('color')">
+                            ${t('mission1Option2')}
+                        </button>
+                        <button class="choice-btn" onclick="fixButton('text')">
+                            ${t('mission1Option3')}
+                        </button>
+                        <button class="choice-btn" onclick="fixButton('all')">
+                            ${t('mission1Option4')}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function fixButton(choice) {
+            buttonFixAttempts++;
+            
+            const buttons = document.querySelectorAll('.choice-btn');
+            const button = document.querySelector('#buttonContainer button');
+            if (!button) return;
+
+            if (choice === 'all') {
+                // Правильный ответ!
+                buttons.forEach(btn => btn.style.pointerEvents = 'none');
+                
+                button.textContent = t('mission1OrderButtonFixed');
+                button.className = 'interactive-button btn-fixed';
+                
+                const correctBtn = document.querySelector(`[onclick="fixButton('all')"]`);
+                if (correctBtn) correctBtn.classList.add('correct');
+                
+                // XP зависит от попытки
+                const xp = buttonFixAttempts === 1 ? 100 : (buttonFixAttempts === 2 ? 80 : (buttonFixAttempts === 3 ? 60 : 50));
+                
+                setTimeout(() => {
+                    showResult(true, xp, '18%', '2%');
+                }, 800);
+            } else {
+                // Неправильный ответ
+                const incorrectBtn = document.querySelector(`[onclick="fixButton('${choice}')"]`);
+                if (incorrectBtn) {
+                    incorrectBtn.classList.add('incorrect');
+                    
+                    // Анимация тряски
+                    incorrectBtn.style.animation = 'shake 0.5s';
+                    setTimeout(() => {
+                        incorrectBtn.style.animation = '';
+                        incorrectBtn.classList.remove('incorrect');
+                    }, 500);
+                }
+                
+                if (buttonFixAttempts >= 3) {
+                    // 3 попытки использованы - показываем правильный ответ и завершаем с минимальными баллами
+                    setTimeout(() => {
+                        buttons.forEach(btn => btn.style.pointerEvents = 'none');
+                        
+                        const correctBtn = document.querySelector(`[onclick="fixButton('all')"]`);
+                        if (correctBtn) {
+                            correctBtn.classList.add('correct');
+                            correctBtn.style.animation = 'correctPulse 0.5s infinite';
+                        }
+                        
+                        button.textContent = t('mission1OrderButtonFixed');
+                        button.className = 'interactive-button btn-fixed';
+                        
+                        setTimeout(() => {
+                            showResult(false, 50, '15%', '2%');
+                        }, 1500);
+                    }, 600);
+                }
+                // Если меньше 3 попыток - просто подсвечиваем неправильный и даём попробовать ещё
+            }
+        }
+
+        function createSimplifyFormGame() {
+            return `
+                <div class="mission-card">
+                    <h3 class="mission-title">${t('mission2Task')}</h3>
+                    <p style="color: var(--text-muted); margin-top: 10px;">
+                        ${t('mission2Desc')}
+                    </p>
+                    <div style="text-align: center; color: var(--warning); font-size: 1.5rem; font-weight: 700; margin-top: 15px;">
+                        <span id="timer">45</span> ${t('sec')}
+                    </div>
+                </div>
+
+                <div class="game-screen">
+                    <div class="screen-title">Кликай на поля чтобы удалить:</div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;">
+                        <div class="phone-container">
+                            <div class="phone-mockup">
+                                <div class="phone-screen">
+                                    <div class="app-header">
+                                        <div class="app-title">💪 FitApp</div>
+                                    </div>
+                                    <div class="app-content" style="overflow-y: auto; max-height: 500px;" id="formFields">
+                                        <h3 style="color: #1F2937; margin-bottom: 20px;">${t('registration')}</h3>
+                                        
+                                        <div class="form-field" data-necessary="true" data-field="email" onclick="removeField(this)">
+                                            <label class="form-label">${t('email')} *</label>
+                                            <input class="form-input" type="email" value="user@mail.com">
+                                        </div>
+
+                                        <div class="form-field" data-necessary="true" data-field="password" onclick="removeField(this)">
+                                            <label class="form-label">${t('password')} *</label>
+                                            <input class="form-input" type="password" value="••••••••">
+                                        </div>
+
+                                        <div class="form-field" data-necessary="false" data-field="patronymic" onclick="removeField(this)">
+                                            <label class="form-label">${t('patronymic')}</label>
+                                            <input class="form-input" type="text">
+                                        </div>
+
+                                        <div class="form-field" data-necessary="false" data-field="birthdate" onclick="removeField(this)">
+                                            <label class="form-label">${t('birthdate')}</label>
+                                            <input class="form-input" type="date">
+                                        </div>
+
+                                        <div class="form-field" data-necessary="false" data-field="height" onclick="removeField(this)">
+                                            <label class="form-label">${t('height')}</label>
+                                            <input class="form-input" type="number">
+                                        </div>
+
+                                        <div class="form-field" data-necessary="false" data-field="weight" onclick="removeField(this)">
+                                            <label class="form-label">${t('weight')}</label>
+                                            <input class="form-input" type="number">
+                                        </div>
+
+                                        <div class="form-field" data-necessary="false" data-field="address" onclick="removeField(this)">
+                                            <label class="form-label">${t('address')}</label>
+                                            <input class="form-input" type="text">
+                                        </div>
+
+                                        <div class="form-field" data-necessary="false" data-field="phone" onclick="removeField(this)">
+                                            <label class="form-label">${t('phone')}</label>
+                                            <input class="form-input" type="tel">
+                                        </div>
+
+                                        <div class="form-field" data-necessary="false" data-field="inn" onclick="removeField(this)">
+                                            <label class="form-label">${t('inn')}</label>
+                                            <input class="form-input" type="text">
+                                        </div>
+
+                                        <button class="interactive-button btn-fixed" style="margin-top: 20px;">
+                                            ${t('register')}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 20px;">
+                            <h4 style="margin-bottom: 15px; color: var(--text-muted);">${t('mission2Stats')}</h4>
+                            <div style="font-size: 0.9rem; line-height: 2;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>${t('mission2TotalFields')}</span>
+                                    <strong>9</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>${t('mission2Remaining')}</span>
+                                    <strong id="fieldsCount">9</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>${t('mission2Removed')}</span>
+                                    <strong id="removedCount">0</strong>
+                                </div>
+                            </div>
+                            <hr style="border: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+                            <div style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+                                ${t('mission2Hint')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons" style="margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="finishFormSimplification()">
+                            ${t('mission2Button')}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        let timerInterval;
+        let timeLeft = 45;
+
+        function startTimer() {
+            clearInterval(timerInterval); // Clear any existing timer
+            timeLeft = 45;
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const timerEl = document.getElementById('timer');
+                if (timerEl) {
+                    timerEl.textContent = timeLeft;
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    checkFormSimplification();
+                }
+            }, 1000);
+        }
+
+        let removedFields = [];
+
+        function removeField(field) {
+            const fieldName = field.dataset.field;
+            const isNecessary = field.dataset.necessary === 'true';
+            
+            // Сохраняем информацию об удалённом поле
+            removedFields.push({
+                field: fieldName,
+                necessary: isNecessary
+            });
+            
+            // Анимация удаления
+            field.style.animation = 'fadeOut 0.3s';
+            field.style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+                field.remove();
+                updateFieldsCount();
+            }, 300);
+        }
+
+        function updateFieldsCount() {
+            const remaining = document.querySelectorAll('.form-field').length;
+            const removed = removedFields.length;
+            
+            const remainingEl = document.getElementById('fieldsCount');
+            const removedEl = document.getElementById('removedCount');
+            
+            if (remainingEl) remainingEl.textContent = remaining;
+            if (removedEl) removedEl.textContent = removed;
+        }
+
+        function finishFormSimplification() {
+            clearInterval(timerInterval);
+            
+            // Подсчитываем результат
+            let correctRemoved = 0;
+            let wrongRemoved = 0;
+            let shouldRemain = ['email', 'password'];
+            
+            removedFields.forEach(item => {
+                if (item.necessary) {
+                    wrongRemoved++; // Удалили важное поле!
+                } else {
+                    correctRemoved++; // Правильно удалили лишнее
+                }
+            });
+            
+            // Проверяем что осталось
+            const remaining = Array.from(document.querySelectorAll('.form-field'))
+                .map(field => field.dataset.field);
+            
+            const totalUnnecessary = 7; // Всего лишних полей
+            const score = correctRemoved * 20 - wrongRemoved * 30;
+            const maxScore = 150;
+            
+            // Определяем результат
+            if (wrongRemoved === 0 && correctRemoved === totalUnnecessary) {
+                // Идеально!
+                showFormResult(true, maxScore, correctRemoved, wrongRemoved);
+            } else if (wrongRemoved === 0 && correctRemoved >= 4) {
+                // Хорошо, но не всё удалили
+                showFormResult(false, Math.max(score, 100), correctRemoved, wrongRemoved);
+            } else if (wrongRemoved > 0) {
+                // Удалили важные поля - плохо!
+                showFormResult(false, Math.max(score, 50), correctRemoved, wrongRemoved);
+            } else {
+                // Почти ничего не удалили
+                showFormResult(false, 50, correctRemoved, wrongRemoved);
+            }
+        }
+
+        function showFormResult(perfect, xp, correctRemoved, wrongRemoved) {
+            const mission = missions[currentLevel];
+            
+            // Считаем время прохождения
+            const completionTime = missionStartTime ? Math.floor((Date.now() - missionStartTime) / 1000) : 0;
+            
+            // Определяем успех (проходной балл 70 XP)
+            const success = xp >= 70;
+            
+            // Добавляем XP
+            totalXP += xp;
+            updateXP();
+            
+            // Сохраняем миссию как пройденную (даже с плохим результатом)
+            if (!completedMissions.includes(mission.id)) {
+                completedMissions.push(mission.id);
+                localStorage.setItem('uxhero_completed', JSON.stringify(completedMissions));
+            }
+            
+            // Обновляем статистику миссии
+            const stats = missionStats[mission.id];
+            stats.completions++;
+            stats.totalXP += xp;
+            
+            // Обновляем лучший результат
+            if (xp > stats.bestXP) {
+                stats.bestXP = xp;
+            }
+            
+            // Обновляем лучшее время (только если успешно)
+            if (success && (stats.bestTime === null || completionTime < stats.bestTime)) {
+                stats.bestTime = completionTime;
+            }
+            
+            // Сохраняем статистику
+            localStorage.setItem('uxhero_stats', JSON.stringify(missionStats));
+            
+            // Обновляем общее XP в localStorage для лидерборда
+            localStorage.setItem('uxhero_totalXP', totalXP.toString());
+            
+            const feedbackMessages = {
+                perfect: t('mission2Perfect'),
+                good: t('mission2Good'),
+                mistake: t('mission2Mistake'),
+                tooMany: t('mission2TooMany')
+            };
+            
+            let message = '';
+            let resultIcon = '🎉';
+            
+            if (perfect) {
+                message = feedbackMessages.perfect;
+                resultIcon = '🎉';
+            } else if (wrongRemoved > 0) {
+                message = feedbackMessages.mistake;
+                resultIcon = '😬';
+            } else if (correctRemoved >= 4) {
+                message = feedbackMessages.good;
+                resultIcon = '👍';
+            } else {
+                message = feedbackMessages.tooMany;
+                resultIcon = '🤔';
+            }
+            
+            const content = `
+                <div class="game-screen">
+                    <div class="result-screen">
+                        <div class="result-icon">${resultIcon}</div>
+                        <h2 class="result-title">${perfect ? t('perfect') : t('result')}</h2>
+
+                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 20px; margin: 20px 0;">
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
+                                <div>
+                                    <div style="font-size: 0.85rem; color: var(--text-muted);">${t('mission2CorrectRemoved')}</div>
+                                    <div style="font-size: 2rem; font-weight: 700; color: var(--success);">${correctRemoved}</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.85rem; color: var(--text-muted);">${t('mission2WrongRemoved')}</div>
+                                    <div style="font-size: 2rem; font-weight: 700; color: var(--error);">${wrongRemoved}</div>
+                                </div>
+                            </div>
+                            <div style="padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">${t('mission2Experience')}</div>
+                                <div style="font-size: 2.5rem; font-weight: 700; color: ${success ? 'var(--accent)' : 'var(--error)'};">+${xp} XP</div>
+                                ${!success ? `<div style="font-size: 0.9rem; color: var(--error); margin-top: 5px;">⚠️ ${t('passingScore')}: 70 XP</div>` : ''}
+                            </div>
+                        </div>
+
+                        <div class="user-feedback">
+                            ${message}
+                        </div>
+
+                        <div class="lesson-box">
+                            <div class="lesson-title">
+                                💡 ${t('uxLesson')}
+                            </div>
+                            <div class="lesson-text">
+                                ${t('mission2LessonText')}
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary" onclick="showMissionMenu()">
+                                📋 ${t('backToMenu')}
+                            </button>
+                            <button class="btn btn-secondary" onclick="retryLevel()">
+                                🔄 ${t('tryAgain')}
+                            </button>
+                            ${completedMissions.length === missions.length ? `
+                                <button class="btn btn-primary" onclick="showFinalScreen()">
+                                    ${t('finish')}
+                                </button>
+                            ` : `
+                                <button class="btn btn-primary" onclick="nextMission()">
+                                    ${currentLevel < missions.length - 1 ? t('nextTask') : t('continue')}
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('gameContent').innerHTML = content;
+        }
+
+        function createABTestGame() {
+            return `
+                <div class="mission-card">
+                    <h3 class="mission-title">${t('mission3Task')}</h3>
+                    <p style="color: var(--text-muted);">${t('mission3Desc')}</p>
+                </div>
+
+                <div class="game-screen">
+                    <div class="ab-test-container">
+                        <div class="ab-option" onclick="selectABOption('a', this)">
+                            <div class="ab-label">${t('mission3VariantA')}</div>
+                            <div class="phone-mockup" style="transform: scale(0.7); margin: 0 auto;">
+                                <div class="phone-screen">
+                                    <div class="app-content">
+                                        <h3 style="color: #1F2937; margin-bottom: 10px;">${t('mission3CheckoutA')}</h3>
+                                        <div style="background: #F3F4F6; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                                            <p style="color: #6B7280; font-size: 0.8rem;">${t('mission3ItemsCount')}</p>
+                                            <p style="color: #1F2937; font-weight: 700; font-size: 1.1rem;">2,450 ₽</p>
+                                        </div>
+                                        <input class="form-input" placeholder="${t('mission3Name')}" style="margin-bottom: 8px;">
+                                        <input class="form-input" placeholder="${t('phone')}" style="margin-bottom: 8px;">
+                                        <input class="form-input" placeholder="Email" style="margin-bottom: 8px;">
+                                        <input class="form-input" placeholder="${t('address')}" style="margin-bottom: 8px;">
+                                        <textarea class="form-input" placeholder="${t('mission3Comment')}" style="margin-bottom: 12px; height: 60px;"></textarea>
+                                        <button class="interactive-button" style="background: #10B981; color: white;">${t('mission3Order')}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ab-option" onclick="selectABOption('b', this)">
+                            <div class="ab-label">${t('mission3VariantB')}</div>
+                            <div class="phone-mockup" style="transform: scale(0.7); margin: 0 auto;">
+                                <div class="phone-screen">
+                                    <div class="app-content">
+                                        <h3 style="color: #1F2937; margin-bottom: 10px;">${t('mission3AlmostDone')}</h3>
+                                        <div style="background: #DBEAFE; padding: 20px; border-radius: 12px; margin-bottom: 15px; border: 2px solid #3B82F6;">
+                                            <p style="color: #1E40AF; font-size: 0.85rem; margin-bottom: 5px;">${t('mission3YourOrder')}</p>
+                                            <p style="color: #1F2937; font-weight: 700; font-size: 1.4rem;">2,450 ₽</p>
+                                        </div>
+                                        <input class="form-input" placeholder="${t('mission3YourPhone')}" style="margin-bottom: 15px; padding: 14px;">
+                                        <button class="interactive-button" style="background: #3B82F6; color: white; padding: 16px; font-size: 1.1rem;">${t('mission3PlaceOrder')}</button>
+                                        <p style="text-align: center; color: #6B7280; font-size: 0.75rem; margin-top: 10px;">${t('mission3WillCall')}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons" style="margin-top: 20px;">
+                        <button class="btn btn-primary" id="submitAB" onclick="submitABTest()" disabled>
+                            ${t('mission3Button')}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        let buttonFixAttempts = 0;
+        let selectedAB = null;
+        let abTestAttempts = 0;
+
+        function selectABOption(option, element) {
+            document.querySelectorAll('.ab-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedAB = option;
+            document.getElementById('submitAB').disabled = false;
+        }
+
+        function submitABTest() {
+            abTestAttempts++;
+            
+            if (selectedAB === 'b') {
+                // Правильный ответ!
+                const xp = abTestAttempts === 1 ? 200 : 100; // Меньше XP если не с первой попытки
+                showResult(true, xp, '28%', '12%');
+            } else {
+                // Неправильный ответ
+                if (abTestAttempts >= 2) {
+                    // Уже 2 попытки - показываем результат с минимальными баллами
+                    showResult(false, 50, '15%', '12%');
+                } else {
+                    // Даём ещё одну попытку
+                    document.querySelectorAll('.ab-option').forEach(el => {
+                        if (el.classList.contains('selected')) {
+                            el.style.animation = 'shake 0.5s';
+                            setTimeout(() => el.style.animation = '', 500);
+                        }
+                    });
+                    
+                    // Показываем подсказку
+                    const hint = document.createElement('div');
+                    hint.style.cssText = 'background: rgba(239, 68, 68, 0.2); border-left: 4px solid var(--error); padding: 15px; border-radius: 10px; margin: 20px 0; animation: slideUp 0.3s ease-out;';
+                    hint.innerHTML = '<strong>🤔 Подумай ещё раз!</strong><br>Вариант B проще: меньше полей, понятнее призыв к действию.<br><br>У тебя есть ещё одна попытка!';
+                    
+                    const submitBtn = document.getElementById('submitAB');
+                    submitBtn.parentElement.insertBefore(hint, submitBtn.parentElement.firstChild);
+                    
+                    // Сбрасываем выбор
+                    selectedAB = null;
+                    document.getElementById('submitAB').disabled = true;
+                    document.querySelectorAll('.ab-option').forEach(el => el.classList.remove('selected'));
+                }
+            }
+        }
+
+        function createPrioritizeGame() {
+            return `
+                <div class="mission-card">
+                    <h3 class="mission-title">${t('mission4Task')}</h3>
+                    <p style="color: var(--text-muted);">${t('mission4Desc')}</p>
+                </div>
+
+                <div class="game-screen">
+                    <div style="max-width: 600px; margin: 0 auto;">
+                        <h4 style="margin-bottom: 20px; color: var(--text-muted);">${t('mission4Reviews')}</h4>
+                        
+                        <div class="choice-buttons">
+                            <button class="choice-btn" onclick="selectPriority(1, this)">
+                                ${t('mission4Review1')}
+                            </button>
+
+                            <button class="choice-btn" onclick="selectPriority(2, this)">
+                                ${t('mission4Review2')}
+                            </button>
+
+                            <button class="choice-btn" onclick="selectPriority(3, this)">
+                                ${t('mission4Review3')}
+                            </button>
+
+                            <button class="choice-btn" onclick="selectPriority(4, this)">
+                                ${t('mission4Review4')}
+                            </button>
+
+                            <button class="choice-btn" onclick="selectPriority(5, this)">
+                                ${t('mission4Review5')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        let priorityAttempts = 0;
+
+        function selectPriority(priority, element) {
+            priorityAttempts++;
+            
+            if (priority === 1) {
+                // Правильный ответ!
+                element.classList.add('correct');
+                const xp = priorityAttempts === 1 ? 250 : (priorityAttempts === 2 ? 200 : 150);
+                setTimeout(() => {
+                    showResult(true, xp, '92%', '87%');
+                }, 800);
+            } else {
+                // Неправильный ответ
+                element.classList.add('incorrect');
+                
+                if (priorityAttempts >= 3) {
+                    // 3 попытки использованы - показываем правильный ответ
+                    setTimeout(() => {
+                        const correctOption = document.querySelector('[onclick="selectPriority(1, this)"]');
+                        correctOption.classList.add('correct');
+                        correctOption.style.animation = 'correctPulse 0.5s infinite';
+                        
+                        setTimeout(() => {
+                            showResult(false, 100, '89%', '87%');
+                        }, 1500);
+                    }, 500);
+                } else {
+                    // Даём ещё попытки
+                    const attemptsLeft = 3 - priorityAttempts;
+                    setTimeout(() => {
+                        alert(`Подумай ещё раз! Что блокирует БОЛЬШЕ ВСЕГО пользователей?\n\nПопыток осталось: ${attemptsLeft}`);
+                        element.classList.remove('incorrect');
+                    }, 500);
+                }
+            }
+        }
+
+        function showResult(success, xp, newMetric, oldMetric) {
+            const mission = missions[currentLevel];
+            
+            // Считаем время прохождения
+            const completionTime = missionStartTime ? Math.floor((Date.now() - missionStartTime) / 1000) : 0;
+            
+            totalXP += xp;
+            updateXP();
+            
+            // Сохраняем миссию как пройденную
+            if (!completedMissions.includes(mission.id)) {
+                completedMissions.push(mission.id);
+                localStorage.setItem('uxhero_completed', JSON.stringify(completedMissions));
+            }
+            
+            // Обновляем статистику миссии
+            const stats = missionStats[mission.id];
+            stats.completions++;
+            stats.totalXP += xp;
+            
+            // Обновляем лучший результат
+            if (xp > stats.bestXP) {
+                stats.bestXP = xp;
+            }
+            
+            // Обновляем лучшее время (только если успешно)
+            if (success && (stats.bestTime === null || completionTime < stats.bestTime)) {
+                stats.bestTime = completionTime;
+            }
+            
+            // Сохраняем статистику
+            localStorage.setItem('uxhero_stats', JSON.stringify(missionStats));
+            
+            // Обновляем общее XP в localStorage для лидерборда
+            localStorage.setItem('uxhero_totalXP', totalXP.toString());
+
+            const feedbacks = [
+                t('feedback1'),
+                t('feedback2'),
+                t('feedback3'),
+                t('feedback4')
+            ];
+
+            const content = `
+                <div class="game-screen">
+                    <div class="result-screen">
+                        <div class="result-icon">🎉</div>
+                        <h2 class="result-title">${t('greatWork')}</h2>
+
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-label">${t('conversion')}</div>
+                                <div class="metric-value" style="color: var(--success);">${newMetric}</div>
+                                <div class="metric-change up">↗ ${t('was')} ${oldMetric}</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">${t('mission2Experience')}</div>
+                                <div class="metric-value" style="color: var(--accent);">+${xp}</div>
+                                <div class="metric-change" style="color: var(--accent);">XP ${t('received')}</div>
+                            </div>
+                        </div>
+
+                        <div class="user-feedback">
+                            💬 ${feedbacks[currentLevel]}
+                        </div>
+
+                        <div class="lesson-box">
+                            <div class="lesson-title">
+                                💡 ${t('uxLesson')}
+                            </div>
+                            <div class="lesson-text">
+                                ${t(mission.lessonKey)}
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary" onclick="showMissionMenu()">
+                                📋 ${t('backToMenu')}
+                            </button>
+                            <button class="btn btn-secondary" onclick="retryLevel()">
+                                🔄 ${t('tryAgain')}
+                            </button>
+                            ${completedMissions.length === missions.length ? `
+                                <button class="btn btn-primary" onclick="showFinalScreen()">
+                                    ${t('finish')}
+                                </button>
+                            ` : `
+                                <button class="btn btn-primary" onclick="nextMission()">
+                                    ${currentLevel < missions.length - 1 ? t('nextTask') : t('continue')}
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('gameContent').innerHTML = content;
+        }
+        
+        function retryLevel() {
+            // Сбрасываем попытки для всех уровней
+            buttonFixAttempts = 0;
+            abTestAttempts = 0;
+            priorityAttempts = 0;
+            selectedAB = null;
+            removedFields = [];
+            
+            // Don't increment level, just restart current mission
+            showMissionBrief();
+        }
+
+        function updateXP() {
+            const currentStage = careerStages[careerStage];
+            const progress = (totalXP / currentStage.xpNeeded) * 100;
+
+            document.getElementById('xpFill').style.width = Math.min(progress, 100) + '%';
+            document.getElementById('xpText').textContent = `${totalXP} / ${currentStage.xpNeeded}`;
+
+            if (totalXP >= currentStage.xpNeeded && careerStage < careerStages.length - 1) {
+                levelUp();
+            }
+        }
+
+        function levelUp() {
+            careerStage++;
+            const newStage = careerStages[careerStage];
+            
+            document.getElementById('careerTitle').textContent = newStage.title;
+            document.getElementById('careerLevel').textContent = `Level ${careerStage + 1}`;
+            document.querySelector('.career-icon').textContent = newStage.icon;
+
+            // Animation
+            document.querySelector('.career-progress').style.animation = 'none';
+            setTimeout(() => {
+                document.querySelector('.career-progress').style.animation = 'fadeInDown 0.6s ease-out';
+            }, 10);
+
+            updateXP();
+        }
+
+        function nextMission() {
+            currentLevel++;
+            
+            if (currentLevel >= missions.length) {
+                showFinalScreen();
+            } else {
+                showMissionBrief();
+            }
+        }
+
+        function showFinalScreen() {
+            const content = `
+                <div class="game-screen">
+                    <div class="result-screen">
+                        <div class="result-icon">🏆</div>
+                        <h2 class="result-title">${t('congratulationsTitle')}</h2>
+                        
+                        <p style="font-size: 1.2rem; color: var(--text-muted); margin: 20px 0;">
+                            ${t('finalMessage')} <strong style="color: var(--primary);">${t('uxHero')}</strong>!
+                        </p>
+                        
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-label">${t('totalExperience')}</div>
+                                <div class="metric-value" style="color: var(--accent);">${totalXP} XP</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">${t('career')}</div>
+                                <div class="metric-value">${careerStages[careerStage].icon} ${t(careerStages[careerStage].titleKey)}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="lesson-box">
+                            <div class="lesson-title">${t('youLearned')}</div>
+                            <div class="lesson-text">
+                                ${t('learnedSkills')}
+                            </div>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" onclick="showMissionMenu()">
+                                ${t('backToMenuFinal')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('gameContent').innerHTML = content;
+        }
+
+        // Start the game
+        startGame();
+    </script>
+</body>
+</html>
