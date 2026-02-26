@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>IT RoadShow Games — School 21</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --mint: #00FFAF;
+      --mint-glow: rgba(0, 255, 175, 0.25);
+      --bg: #000000;
+      --card-bg: #0a0a0a;
+      --card-border: #1a1a1a;
+      --text: #ffffff;
+      --text-dim: #888888;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Orbitron", sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* STARFIELD */
+    .starfield { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .star {
+      position: absolute; background: #fff; border-radius: 50%;
+      animation: twinkle linear infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+
+    /* LAYOUT */
+    .page {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center;
+      padding: 36px 20px 48px;
+    }
+
+    /* HEADER */
+    .header {
+      display: flex; flex-direction: column; align-items: center; gap: 18px;
+      width: 100%; max-width: 420px;
+      margin-bottom: 32px;
+    }
+
+    .logo-wrap {
+      width: 110px; height: 90px;
+      display: flex; align-items: center; justify-content: center;
+      animation: logoGlow 3s ease-in-out infinite;
+    }
+    .logo-wrap img { width: 100%; height: 100%; object-fit: contain; }
+
+    @keyframes logoGlow {
+      0%, 100% { filter: drop-shadow(0 0 8px var(--mint)); }
+      50%       { filter: drop-shadow(0 0 22px var(--mint)); }
+    }
+
+    .title-main {
+      font-size: clamp(24px, 7vw, 34px);
+      font-weight: 900; letter-spacing: 0.05em;
+      color: var(--text); line-height: 1.1;
+      text-transform: uppercase; text-align: center;
+    }
+    .title-main span { color: var(--mint); }
+
+    .title-sub {
+      font-size: 14px; letter-spacing: 0.2em;
+      color: var(--mint); margin-top: 8px;
+      font-family: "Orbitron", sans-serif;
+      font-weight: 700; text-align: center;
+      text-transform: uppercase;
+    }
+
+    /* DIVIDER */
+    .divider {
+      width: 100%; max-width: 420px;
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 24px;
+    }
+    .divider-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--mint), transparent); }
+    .divider-label {
+      font-size: 9px; letter-spacing: 0.35em; color: var(--mint);
+      font-family: "Share Tech Mono", monospace; white-space: nowrap;
+    }
+
+    /* GAME CARD */
+    .game-card {
+      width: 100%; max-width: 420px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      animation: cardIn 0.6s ease both;
+      position: relative;
+    }
+    .game-card:hover { transform: translateY(-3px); border-color: var(--mint); }
+    .game-card:active { transform: scale(0.98); }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .game-card::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--mint), transparent);
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .game-card:hover::before { opacity: 1; }
+
+    .card-inner {
+      display: flex; align-items: stretch;
+      min-height: 200px;
+    }
+
+    .card-visual {
+      width: 150px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .card-visual::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, rgba(0,255,175,0.08) 0%, transparent 70%);
+    }
+
+    .ship-img {
+      width: 130px; height: 130px;
+      object-fit: contain;
+      image-rendering: pixelated;
+      position: relative; z-index: 1;
+      animation: shipFloat 4s ease-in-out infinite;
+      filter: drop-shadow(0 0 10px rgba(0,255,175,0.4));
+    }
+    @keyframes shipFloat {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-8px); }
+    }
+
+    .card-content {
+      flex: 1; padding: 20px 16px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      border-left: 1px solid var(--card-border);
+    }
+
+    .card-title {
+      font-size: 20px; font-weight: 900;
+      letter-spacing: 0.05em; line-height: 1.15;
+      text-transform: uppercase; color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .card-desc {
+      font-size: 11px; line-height: 1.65;
+      color: var(--text-dim);
+      font-family: "Share Tech Mono", monospace;
+      margin-bottom: 14px; flex: 1;
+    }
+
+    .card-meta {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;
+    }
+    .meta-badge {
+      font-size: 9px; letter-spacing: 0.15em;
+      color: var(--text-dim);
+      font-family: "Share Tech Mono", monospace;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .meta-badge::before { content: "◆"; color: var(--mint); font-size: 7px; }
+
+    .play-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 11px 20px;
+      background: transparent;
+      border: 1px solid var(--mint);
+      border-radius: 8px;
+      color: var(--mint);
+      font-family: "Orbitron", sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; cursor: pointer;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+    .play-btn:hover {
+      background: var(--mint); color: #000;
+      box-shadow: 0 0 20px var(--mint-glow);
+    }
+    .play-btn .arrow { transition: transform 0.2s; }
+    .play-btn:hover .arrow { transform: translateX(4px); }
+
+    /* SCANLINES */
+    .scanlines {
+      position: fixed; inset: 0; z-index: 2; pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px, transparent 3px,
+        rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px
+      );
+    }
+  </style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+<div class="starfield" id="starfield"></div>
+
+<div class="page">
+
+  <header class="header">
+    <div class="logo-wrap">
+      <img src="https://raw.githubusercontent.com/AntonGenso/School21-RoadShow-Game/main/screen01/logo.png" alt="School 21">
+    </div>
+    <div class="title-main">IT Road<span>Show</span><br>Games</div>
+    <div class="title-sub">by School 21</div>
+  </header>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">// game_select.exe</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="game-card" onclick="startGame()">
+    <div class="card-inner">
+      <div class="card-visual">
+        <img class="ship-img"
+          src="https://raw.githubusercontent.com/AntonGenso/School21-RoadShow-Game/main/screen01/spaceship1.png"
+          alt="Code Invaders">
+      </div>
+      <div class="card-content">
+        <div>
+          <div class="card-title">Code<br>Invaders</div>
+          <div class="card-desc">Fix bugs before they reach your ship. Shoot the correct answer. Survive 3 minutes.</div>
+          <div class="card-meta">
+            <span class="meta-badge">3 MIN</span>
+            <span class="meta-badge">5 LIVES</span>
+            <span class="meta-badge">LEADERBOARD</span>
+          </div>
+        </div>
+        <button class="play-btn">PLAY <span class="arrow">→</span></button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Starfield
+  const starfield = document.getElementById("starfield");
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement("div");
+    s.className = "star";
+    const size = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s`;
+    starfield.appendChild(s);
+  }
+
+  function startGame() {
+    window.location.href = "02_name.html";
+  }
+</script>
+
+</body>
+</html>
